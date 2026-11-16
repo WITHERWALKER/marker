@@ -69,7 +69,10 @@ solo conocen puertos; cambiar Supabase por otra cosa no toca el negocio.
    ```
 
 5. **Entrar**: login sin contraseña (magic link). En local, el correo llega a
-   la bandeja de **Inbucket** → http://localhost:54324
+   la bandeja de **Inbucket** → http://localhost:54334
+
+   > Puertos elegidos para convivir con otros proyectos Supabase locales
+   > (como `comal`): API `54331`, DB `54332`, Studio `54333`, Inbucket `54334`.
 
 ## Fases
 

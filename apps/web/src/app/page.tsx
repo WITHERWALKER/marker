@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { PLATFORMS, type Platform } from "@/core/domain/item";
 import { makeListItems } from "@/infrastructure/composition";
-import { createSupabaseServerClient } from "@/infrastructure/supabase/client";
+import { createSupabaseServerClient } from "@/infrastructure/supabase/client.server";
 import { ItemCard } from "./components/item-card";
 
 const PLATFORM_LABELS: Record<Platform, string> = {

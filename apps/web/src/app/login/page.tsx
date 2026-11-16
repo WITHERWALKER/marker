@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { createSupabaseBrowserClient } from "@/infrastructure/supabase/client";
+import { createSupabaseBrowserClient } from "@/infrastructure/supabase/client.browser";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -45,12 +45,12 @@ export default function LoginPage() {
         <p className="mt-4 rounded-lg bg-zinc-50 p-3 text-xs text-zinc-500">
           Modo local: el correo aparece en la bandeja de Inbucket →{" "}
           <a
-            href="http://localhost:54324"
+            href="http://localhost:54334"
             target="_blank"
             rel="noopener noreferrer"
             className="text-indigo-600 hover:underline"
           >
-            localhost:54324
+            localhost:54334
           </a>
         </p>
       </div>

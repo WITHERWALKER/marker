@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { createSupabaseServerClient } from "@/infrastructure/supabase/client";
+import { createSupabaseServerClient } from "@/infrastructure/supabase/client.server";
 
 /**
  * Callback del enlace mágico: intercambia el código por una sesión

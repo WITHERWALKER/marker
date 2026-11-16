@@ -1,6 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
-import { supabaseAnonKey, supabaseUrl } from "@/infrastructure/supabase/client";
+import { supabaseAnonKey, supabaseUrl } from "@/infrastructure/supabase/env";
 
 /**
  * Middleware de sesión: refresca tokens y protege rutas privadas.

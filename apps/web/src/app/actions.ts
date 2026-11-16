@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { makeSaveItem } from "@/infrastructure/composition";
-import { createSupabaseServerClient } from "@/infrastructure/supabase/client";
+import { createSupabaseServerClient } from "@/infrastructure/supabase/client.server";
 
 /**
  * Server Actions: la frontera HTTP de la app. Traducen la petición web

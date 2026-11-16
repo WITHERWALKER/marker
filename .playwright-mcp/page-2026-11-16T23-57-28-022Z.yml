@@ -1,0 +1,42 @@
+- generic [active] [ref=f4e1]:
+  - banner [ref=f4e2]:
+    - generic [ref=f4e3]:
+      - link "Marker" [ref=f4e4] [cursor=pointer]:
+        - /url: /
+      - navigation [ref=f4e7]:
+        - link "Feed" [ref=f4e8] [cursor=pointer]:
+          - /url: /
+        - link "Guardar" [ref=f4e9] [cursor=pointer]:
+          - /url: /add
+        - button "Salir" [ref=f4e11]
+  - main [ref=f4e12]:
+    - generic [ref=f4e13]:
+      - region "Filtros y búsqueda" [ref=f4e14]:
+        - generic [ref=f4e15]:
+          - searchbox "Buscar en mis guardados" [ref=f4e16]
+          - button "Buscar" [ref=f4e17]
+        - navigation [ref=f4e18]:
+          - link "Todo" [ref=f4e19] [cursor=pointer]:
+            - /url: /
+          - link "Instagram" [ref=f4e20] [cursor=pointer]:
+            - /url: /?platform=instagram
+          - link "X" [ref=f4e21] [cursor=pointer]:
+            - /url: /?platform=twitter
+          - link "YouTube" [ref=f4e22] [cursor=pointer]:
+            - /url: /?platform=youtube
+          - link "Reddit" [ref=f4e23] [cursor=pointer]:
+            - /url: /?platform=reddit
+          - link "Facebook" [ref=f4e24] [cursor=pointer]:
+            - /url: /?platform=facebook
+          - link "Pinterest" [ref=f4e25] [cursor=pointer]:
+            - /url: /?platform=pinterest
+          - link "TikTok" [ref=f4e26] [cursor=pointer]:
+            - /url: /?platform=tiktok
+          - link "Web" [ref=f4e27] [cursor=pointer]:
+            - /url: /?platform=web
+      - generic [ref=f4e28]:
+        - heading "Tu feed está vacío" [level=1] [ref=f4e29]
+        - paragraph [ref=f4e30]: Guarda tu primer enlace pegando una URL, o espera a la fase 1 para capturar directamente desde el menú “Compartir” de tu Android.
+        - link "Guardar mi primer enlace" [ref=f4e31] [cursor=pointer]:
+          - /url: /add
+  - contentinfo [ref=f4e32]: Marker · fase 0 — captura, feed y búsqueda

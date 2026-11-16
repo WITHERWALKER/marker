@@ -1,7 +1,7 @@
 import { createListItemsUseCase } from "@/core/application/list-items";
 import { createSaveItemUseCase } from "@/core/application/save-item";
 import { HttpMetadataFetcher } from "@/infrastructure/metadata/metadata-fetcher";
-import { createSupabaseServerClient } from "@/infrastructure/supabase/client";
+import { createSupabaseServerClient } from "@/infrastructure/supabase/client.server";
 import { SupabaseItemRepository } from "@/infrastructure/supabase/item-repository";
 
 /**
