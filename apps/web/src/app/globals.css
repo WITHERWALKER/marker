@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+/*
+ * Marker · estilos globales.
+ * La estética vive en las clases de Tailwind por componente; aquí solo
+ * decisiones de documento: fuente, selección y foco accesible.
+ */
+
+html {
+  font-family:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
+  scroll-behavior: smooth;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-indigo-600);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: color-mix(in oklch, var(--color-indigo-600) 25%, transparent);
+}

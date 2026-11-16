@@ -1,0 +1,23 @@
+{
+  "name": "marker",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@12.1.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @marker/web dev",
+    "build": "pnpm --filter @marker/web build",
+    "typecheck": "pnpm -r typecheck"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "supabase",
+      "@tailwindcss/oxide",
+      "sharp",
+      "esbuild",
+      "unrs-resolver"
+    ]
+  }
+}
