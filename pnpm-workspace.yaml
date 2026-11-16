@@ -1,3 +1,12 @@
 packages:
   - "apps/*"
   - "packages/*"
+
+# Scripts de build aprobados (pnpm v10+ los bloquea por defecto)
+onlyBuiltDependencies:
+  - supabase
+  - "@tailwindcss/oxide"
+  - sharp
+  - esbuild
+  - unrs-resolver
+

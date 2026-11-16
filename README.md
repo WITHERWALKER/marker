@@ -26,6 +26,7 @@ apps/
         composition.ts        → composition root (inyección de dependencias)
       app/                    → presentación (rutas, server actions, UI)
       middleware.ts           → sesión + protección de rutas
+supabase/                     → proyecto local Supabase (config + migraciones)
 packages/                     → código compartido (extensión, etc.)
 ```
 
@@ -44,20 +45,21 @@ solo conocen puertos; cambiar Supabase por otra cosa no toca el negocio.
 2. **Supabase local** (requiere Docker), desde la raíz del repo:
 
    ```sh
-   npx supabase init        # solo la primera vez
-   npx supabase start       # levanta Postgres, Auth, Storage...
+   apps\web\node_modules\.bin\supabase start
    ```
 
-   Copia la `API URL` y la `anon key` que imprime el comando a `.env.local`.
+   La primera vez arranca Docker Desktop si hace falta y descarga las
+   imágenes. Copia la `API URL` y la `anon key` que imprime el comando a
+   `.env.local`.
 
 3. **Migraciones**
 
    ```sh
-   npx supabase db reset    # aplica apps/web/supabase/migrations/*
+   apps\web\node_modules\.bin\supabase db reset
    ```
 
-   > Nota: `supabase/config.toml` apunta a `apps/web/supabase` como
-   > directorio de migraciones.
+   > Nota: `supabase start` ya aplica las migraciones de `supabase/migrations/`
+   > en su primer arranque; `db reset` las reaplica desde cero.
 
 4. **Arrancar la app**
 

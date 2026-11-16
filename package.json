@@ -10,14 +10,5 @@
     "dev": "pnpm --filter @marker/web dev",
     "build": "pnpm --filter @marker/web build",
     "typecheck": "pnpm -r typecheck"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "supabase",
-      "@tailwindcss/oxide",
-      "sharp",
-      "esbuild",
-      "unrs-resolver"
-    ]
   }
 }

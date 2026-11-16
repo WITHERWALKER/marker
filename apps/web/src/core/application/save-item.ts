@@ -65,7 +65,7 @@ export function createSaveItemUseCase(deps: Deps) {
       // 4. Enriquecer (OpenGraph/oEmbed). El fallo no rompe el guardado:
       //    el item queda 'error' y podrá reintentarse más adelante.
       try {
-        const meta: ItemMetadata | null = await deps.metadata.fetch(item.url);
+        const meta = await deps.metadata.fetch(item.url);
         const updated = await deps.items.update(input.userId, item.id, {
           title: meta?.title ?? null,
           description: meta?.description ?? null,
