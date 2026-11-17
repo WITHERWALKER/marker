@@ -3,8 +3,9 @@
 > Todo lo que guardas —Instagram, X, YouTube, la web— en un solo lugar,
 > buscable con palabras, no con memoria.
 
-**Fase actual: 0 (MVP)** — captura por URL, feed con filtros, búsqueda, dedupe
-automático y enriquecimiento de metadata (título, miniatura, autor).
+**Fase actual: 2 (extensión de navegador)** — captura desde cualquier app del
+Android (share target), desde el PC con un clic (extensión Chrome/Edge), feed
+con filtros, búsqueda, dedupe automático y enriquecimiento de metadata.
 
 ---
 
@@ -23,11 +24,13 @@ apps/
       infrastructure/         → implementaciones de los puertos
         supabase/             → repositorio + clientes Supabase
         metadata/             → fetcher OpenGraph/oEmbed
+        auth/                 → tokens de API + JWT efímeros (extensión)
         composition.ts        → composition root (inyección de dependencias)
       app/                    → presentación (rutas, server actions, UI)
       middleware.ts           → sesión + protección de rutas
+  extension/                  → WXT (Manifest V3): menú contextual + popup
 supabase/                     → proyecto local Supabase (config + migraciones)
-packages/                     → código compartido (extensión, etc.)
+packages/                     → código compartido (futuro)
 ```
 
 **Regla de dependencias:** `app → core ← infrastructure`. Los casos de uso
@@ -74,13 +77,35 @@ solo conocen puertos; cambiar Supabase por otra cosa no toca el negocio.
    > Puertos elegidos para convivir con otros proyectos Supabase locales
    > (como `comal`): API `54331`, DB `54332`, Studio `54333`, Inbucket `54334`.
 
+## Cómo configurar la extensión de navegador
+
+1. **Genera un token**: en la web → **Ajustes** → «Tokens de API» → Generar.
+   Cópialo (solo se muestra una vez).
+2. **Compila la extensión**:
+
+   ```sh
+   pnpm --filter @marker/extension build
+   ```
+
+3. **Cárgala en Chrome/Edge**: `chrome://extensions` → modo desarrollador →
+   «Cargar descomprimida» → `apps/extension/.output/chrome-mv3`.
+4. **Conéctala**: icono de Marker → Configuración → URL de la API
+   (`http://localhost:3000`) + pega el token → «Probar conexión».
+5. **Úsala**: clic derecho sobre una página, enlace, imagen o selección →
+   **«Guardar en Marker»**. El badge del icono confirma: ✓ guardado,
+   2× duplicado, ¡ error, ? falta configurar.
+
+> El token viaja como `Authorization: Bearer`; en BD vive solo su SHA-256.
+> La operación corre como tu usuario con RLS activa (JWT efímero), sin
+> service-role key.
+
 ## Fases
 
 | Fase | Qué entrega | Estado |
 |---|---|---|
-| 0 | Captura por URL, feed, búsqueda, dedupe, metadata | ✅ en curso |
-| 1 | PWA Android con share_target (compartir → Marker) | ⬜ |
-| 2 | Extensión de navegador (Chrome/Edge) | ⬜ |
+| 0 | Captura por URL, feed, búsqueda, dedupe, metadata | ✅ |
+| 1 | PWA Android con share_target (compartir → Marker) | ✅ |
+| 2 | Extensión de navegador (Chrome/Edge) con token de API | ✅ |
 | 3 | Import histórico (saved_posts.json de Instagram, X) | ⬜ |
 | 4 | IA: auto-tags, búsqueda semántica, transcripciones | ⬜ |
 | 5 | Auto-syncs (YouTube OAuth, X, Reddit) | ⬜ |

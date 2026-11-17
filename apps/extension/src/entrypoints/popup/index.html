@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Guardar en Marker</title>
+    <style>
+      :root {
+        color-scheme: light;
+      }
+      body {
+        width: 340px;
+        margin: 0;
+        padding: 14px;
+        font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        font-size: 13px;
+        color: #18181b;
+        background: #fafafa;
+      }
+      header {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        margin-bottom: 10px;
+      }
+      header svg {
+        width: 16px;
+        height: 16px;
+        color: #4f46e5;
+        flex: none;
+      }
+      h1 {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 600;
+      }
+      label {
+        display: block;
+        margin: 8px 0 3px;
+        font-weight: 500;
+        color: #3f3f46;
+      }
+      input,
+      textarea {
+        width: 100%;
+        box-sizing: border-box;
+        border: 1px solid #d4d4d8;
+        border-radius: 7px;
+        padding: 7px 9px;
+        font: inherit;
+        background: #fff;
+      }
+      input:focus,
+      textarea:focus {
+        outline: 2px solid #4f46e5;
+        outline-offset: 1px;
+        border-color: #4f46e5;
+      }
+      textarea {
+        resize: vertical;
+      }
+      .actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        margin-top: 12px;
+      }
+      button {
+        border: 0;
+        border-radius: 999px;
+        padding: 7px 16px;
+        font: inherit;
+        font-weight: 500;
+        color: #fff;
+        background: #4f46e5;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #6366f1;
+      }
+      button:disabled {
+        opacity: 0.5;
+        cursor: default;
+      }
+      .link {
+        color: #71717a;
+        font-size: 12px;
+        cursor: pointer;
+        text-decoration: none;
+      }
+      .link:hover {
+        color: #18181b;
+        text-decoration: underline;
+      }
+      #status {
+        margin: 10px 0 0;
+        padding: 8px 10px;
+        border-radius: 7px;
+        font-size: 12px;
+      }
+      #status.ok {
+        background: #ecfdf5;
+        color: #047857;
+      }
+      #status.warn {
+        background: #fffbeb;
+        color: #b45309;
+      }
+      #status.error {
+        background: #fef2f2;
+        color: #b91c1c;
+      }
+      #setup {
+        padding: 12px;
+        border: 1px dashed #d4d4d8;
+        border-radius: 10px;
+        background: #fff;
+        text-align: center;
+        color: #52525b;
+      }
+      [hidden] {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M6 3a2 2 0 0 0-2 2v16l8-5 8 5V5a2 2 0 0 0-2-2H6Z" />
+      </svg>
+      <h1>Guardar en Marker</h1>
+    </header>
+
+    <div id="setup" hidden>
+      <p style="margin: 0 0 10px">Falta configurar tu token de API.</p>
+      <button type="button" id="go-options">Abrir configuración</button>
+    </div>
+
+    <form id="save-form" hidden>
+      <label for="url">Enlace</label>
+      <input id="url" name="url" type="text" required autocomplete="off" />
+
+      <label for="text">Nota <span style="color: #a1a1aa; font-weight: 400">(opcional)</span></label>
+      <textarea id="text" name="text" rows="3" placeholder="¿Por qué lo guardas?"></textarea>
+
+      <div class="actions">
+        <button type="submit" id="save-btn">Guardar</button>
+        <a href="#" class="link" id="open-options">Configuración</a>
+      </div>
+    </form>
+
+    <p id="status" role="status" hidden></p>
+
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

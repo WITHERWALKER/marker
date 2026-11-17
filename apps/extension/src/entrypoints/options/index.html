@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Marker · Opciones</title>
+    <style>
+      :root {
+        color-scheme: light;
+      }
+      body {
+        max-width: 460px;
+        margin: 40px auto;
+        padding: 0 20px;
+        font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        font-size: 14px;
+        color: #18181b;
+        background: #fafafa;
+      }
+      h1 {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 18px;
+        font-weight: 600;
+        margin: 0 0 4px;
+      }
+      h1 svg {
+        width: 20px;
+        height: 20px;
+        color: #4f46e5;
+      }
+      .muted {
+        color: #71717a;
+        margin: 0 0 20px;
+      }
+      label {
+        display: block;
+        margin: 14px 0 4px;
+        font-weight: 500;
+        color: #3f3f46;
+      }
+      .hint {
+        font-size: 12px;
+        color: #a1a1aa;
+        margin: 2px 0 0;
+      }
+      input {
+        width: 100%;
+        box-sizing: border-box;
+        border: 1px solid #d4d4d8;
+        border-radius: 8px;
+        padding: 8px 10px;
+        font: inherit;
+        background: #fff;
+      }
+      input:focus {
+        outline: 2px solid #4f46e5;
+        outline-offset: 1px;
+        border-color: #4f46e5;
+      }
+      .actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 20px;
+      }
+      button {
+        border: 0;
+        border-radius: 999px;
+        padding: 8px 18px;
+        font: inherit;
+        font-weight: 500;
+        color: #fff;
+        background: #18181b;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #3f3f46;
+      }
+      button:disabled {
+        opacity: 0.5;
+        cursor: default;
+      }
+      button.secondary {
+        background: #fff;
+        color: #18181b;
+        border: 1px solid #d4d4d8;
+      }
+      button.secondary:hover {
+        background: #f4f4f5;
+      }
+      #status {
+        margin-top: 14px;
+        padding: 9px 12px;
+        border-radius: 8px;
+        font-size: 13px;
+      }
+      #status.ok {
+        background: #ecfdf5;
+        color: #047857;
+      }
+      #status.error {
+        background: #fef2f2;
+        color: #b91c1c;
+      }
+      [hidden] {
+        display: none !important;
+      }
+      code {
+        font-family: ui-monospace, monospace;
+        font-size: 12px;
+        background: #f4f4f5;
+        padding: 1px 5px;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M6 3a2 2 0 0 0-2 2v16l8-5 8 5V5a2 2 0 0 0-2-2H6Z" />
+      </svg>
+      Marker · Opciones
+    </h1>
+    <p class="muted">
+      Conecta la extensión con tu Marker. Genera el token en la web
+      (<a href="#" id="web-link">Ajustes → Tokens de API</a>) y pégalo aquí.
+    </p>
+
+    <label for="api-base">URL de la API</label>
+    <input id="api-base" type="text" placeholder="http://localhost:3000" autocomplete="off" />
+    <p class="hint">En local, la web de Marker en http://localhost:3000.</p>
+
+    <label for="token">Token de API</label>
+    <input id="token" type="password" placeholder="Pega aquí tu token" autocomplete="off" />
+    <p class="hint">Se guarda solo en este navegador (chrome.storage.local).</p>
+
+    <div class="actions">
+      <button type="button" id="save">Guardar</button>
+      <button type="button" id="test" class="secondary">Probar conexión</button>
+    </div>
+
+    <p id="status" role="status" hidden></p>
+
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>
