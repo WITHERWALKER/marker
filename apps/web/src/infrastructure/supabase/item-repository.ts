@@ -18,6 +18,33 @@ import type {
  * Traduce entre las filas (snake_case) y la entidad de dominio (camelCase).
  */
 
+const INSERT_CHUNK = 100;
+
+/** Divide una lista en trozos (límites de longitud de URL de PostgREST). */
+function chunks<T>(list: T[], size: number): T[][] {
+  const result: T[][] = [];
+  for (let index = 0; index < list.length; index += size) {
+    result.push(list.slice(index, index + size));
+  }
+  return result;
+}
+
+/** Fila de insert: campos comunes + saved_at solo si un import lo trae */
+function toInsertRow(userId: string, item: NewItem): Record<string, unknown> {
+  return {
+    user_id: userId,
+    url: item.url,
+    canonical_url: item.canonicalUrl,
+    platform: item.platform,
+    kind: item.kind,
+    source: item.source,
+    title: item.title ?? null,
+    description: item.description ?? null,
+    content_text: item.contentText ?? null,
+    ...(item.savedAt ? { saved_at: item.savedAt } : {}),
+  };
+}
+
 interface ItemRow {
   id: string;
   url: string;
@@ -75,17 +102,7 @@ export class SupabaseItemRepository implements ItemRepository {
   async create(userId: string, item: NewItem): Promise<Item> {
     const { data, error } = await this.client
       .from("items")
-      .insert({
-        user_id: userId,
-        url: item.url,
-        canonical_url: item.canonicalUrl,
-        platform: item.platform,
-        kind: item.kind,
-        source: item.source,
-        title: item.title ?? null,
-        description: item.description ?? null,
-        content_text: item.contentText ?? null,
-      })
+      .insert(toInsertRow(userId, item))
       .select("*")
       .single<ItemRow>();
     if (error) throw new Error(`create: ${error.message}`);
@@ -139,5 +156,34 @@ export class SupabaseItemRepository implements ItemRepository {
     const { data, error } = await query.returns<ItemRow[]>();
     if (error) throw new Error(`list: ${error.message}`);
     return (data ?? []).map(toDomain);
+  }
+
+  async findByCanonicalUrls(userId: string, canonicalUrls: string[]): Promise<string[]> {
+    if (canonicalUrls.length === 0) return [];
+    const found: string[] = [];
+    for (const chunk of chunks(canonicalUrls, 200)) {
+      const { data, error } = await this.client
+        .from("items")
+        .select("canonical_url")
+        .eq("user_id", userId)
+        .in("canonical_url", chunk)
+        .returns<{ canonical_url: string }[]>();
+      if (error) throw new Error(`findByCanonicalUrls: ${error.message}`);
+      for (const row of data ?? []) found.push(row.canonical_url);
+    }
+    return found;
+  }
+
+  async createMany(userId: string, items: NewItem[]): Promise<number> {
+    if (items.length === 0) return 0;
+    let inserted = 0;
+    for (const chunk of chunks(items, INSERT_CHUNK)) {
+      const { error } = await this.client
+        .from("items")
+        .insert(chunk.map((item) => toInsertRow(userId, item)));
+      if (error) throw new Error(`createMany: ${error.message}`);
+      inserted += chunk.length;
+    }
+    return inserted;
   }
 }

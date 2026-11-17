@@ -1,6 +1,11 @@
+import { createImportItemsUseCase } from "@/core/application/import-items";
 import { createListItemsUseCase } from "@/core/application/list-items";
 import { createSaveItemUseCase } from "@/core/application/save-item";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import type { ImportParser } from "@/core/ports";
+import { AutoImportParser } from "@/infrastructure/import/auto-import-parser";
+import { InstagramSavedPostsParser } from "@/infrastructure/import/instagram-saved-posts";
+import { XArchiveParser } from "@/infrastructure/import/x-archive";
 import { HttpMetadataFetcher } from "@/infrastructure/metadata/metadata-fetcher";
 import { createSupabaseServerClient } from "@/infrastructure/supabase/client.server";
 import { SupabaseItemRepository } from "@/infrastructure/supabase/item-repository";
@@ -34,4 +39,16 @@ export async function makeListItems() {
   return createListItemsUseCase({
     items: new SupabaseItemRepository(supabase),
   });
+}
+
+export async function makeImportItems() {
+  const supabase = await createSupabaseServerClient();
+  return createImportItemsUseCase({
+    items: new SupabaseItemRepository(supabase),
+  });
+}
+
+/** Parser que autodetecta el formato del export (Instagram saved_posts / X archive). */
+export function makeImportParser(): ImportParser {
+  return new AutoImportParser([new InstagramSavedPostsParser(), new XArchiveParser()]);
 }
