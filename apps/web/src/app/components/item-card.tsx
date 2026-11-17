@@ -1,5 +1,5 @@
 import { displayUrl } from "@/core/domain/url";
-import type { Item } from "@/core/domain/item";
+import type { Item, ItemKind, Platform } from "@/core/domain/item";
 import { PlatformBadge } from "./platform-badge";
 
 const dateFmt = new Intl.DateTimeFormat("es-ES", {
@@ -8,7 +8,31 @@ const dateFmt = new Intl.DateTimeFormat("es-ES", {
   year: "numeric",
 });
 
-const PLACEHOLDER_ICONS: Record<string, string> = {
+/**
+ * Alturas variadas para el masonry: ratio de la media según el tipo de
+ * contenido (los thumbnails recortan con object-cover, sin layout shift).
+ */
+const MEDIA_ASPECT: Record<ItemKind, string> = {
+  reel: "aspect-[3/4]",
+  video: "aspect-video",
+  post: "aspect-square",
+  image: "aspect-square",
+  article: "aspect-[4/3]",
+  link: "aspect-[4/3]",
+};
+
+const PLACEHOLDER_GRADIENTS: Record<Platform, string> = {
+  instagram: "from-pink-500 via-fuchsia-600 to-orange-400",
+  twitter: "from-sky-500 to-blue-800",
+  youtube: "from-red-500 to-red-800",
+  reddit: "from-orange-400 to-orange-700",
+  facebook: "from-blue-500 to-blue-800",
+  pinterest: "from-rose-500 to-rose-800",
+  tiktok: "from-cyan-400 to-fuchsia-600",
+  web: "from-emerald-400 to-teal-700",
+};
+
+const PLACEHOLDER_ICONS: Record<Platform, string> = {
   instagram: "📸",
   twitter: "🐦",
   youtube: "▶️",
@@ -21,14 +45,10 @@ const PLACEHOLDER_ICONS: Record<string, string> = {
 
 export function ItemCard({ item }: { item: Item }) {
   return (
-    <article className="group flex flex-col overflow-hidden rounded-xl border border-edge bg-surface transition hover:border-mute hover:shadow-sm">
-      <a
-        href={item.url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="block aspect-[16/9] overflow-hidden bg-elevated"
-        aria-label={item.title ?? item.url}
-      >
+    <article className="group relative mb-4 break-inside-avoid overflow-hidden rounded-xl border border-edge bg-surface transition hover:border-mute hover:shadow-md has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-accent">
+      {/* Un solo enlace que estira toda la tarjeta (patrón stretched-link):
+       * accessible name = título; nada más es interactivo dentro. */}
+      <div className={`overflow-hidden bg-elevated ${MEDIA_ASPECT[item.kind] ?? "aspect-[4/3]"}`}>
         {item.thumbnailUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -37,19 +57,19 @@ export function ItemCard({ item }: { item: Item }) {
             loading="lazy"
             decoding="async"
             referrerPolicy="no-referrer"
-            className="h-full w-full object-cover transition duration-200 group-hover:scale-[1.03]"
+            className="h-full w-full object-cover transition duration-200 group-hover:scale-[1.02]"
           />
         ) : (
           <span
             aria-hidden="true"
-            className="flex h-full items-center justify-center text-3xl opacity-60"
+            className={`flex h-full items-center justify-center bg-gradient-to-br text-4xl opacity-90 ${PLACEHOLDER_GRADIENTS[item.platform]}`}
           >
-            {PLACEHOLDER_ICONS[item.platform] ?? "🌐"}
+            <span className="drop-shadow-sm">{PLACEHOLDER_ICONS[item.platform]}</span>
           </span>
         )}
-      </a>
+      </div>
 
-      <div className="flex flex-1 flex-col gap-2 p-4">
+      <div className="flex flex-col gap-2 p-4">
         <div className="flex items-center gap-2">
           <PlatformBadge platform={item.platform} />
           {item.source !== "paste" && (
@@ -59,12 +79,12 @@ export function ItemCard({ item }: { item: Item }) {
           )}
         </div>
 
-        <h2 className="text-sm font-semibold leading-snug text-ink">
+        <h2 className="wrap-anywhere text-sm font-semibold leading-snug text-ink">
           <a
             href={item.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:underline"
+            className="after:absolute after:inset-0 hover:underline"
           >
             {item.title ?? displayUrl(item.url)}
           </a>

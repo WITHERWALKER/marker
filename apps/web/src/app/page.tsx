@@ -1,12 +1,27 @@
 import Link from "next/link";
-import { PLATFORMS, type Platform } from "@/core/domain/item";
+import {
+  ITEM_KINDS,
+  PLATFORMS,
+  type ItemKind,
+  type Platform,
+} from "@/core/domain/item";
 import { makeListItems } from "@/infrastructure/composition";
 import { createSupabaseServerClient } from "@/infrastructure/supabase/client.server";
 import { ItemCard } from "./components/item-card";
 import { PLATFORM_LABELS } from "./components/platform-meta";
+import { SearchForm } from "./components/search-form";
+
+/** Tabs por tipo: artículos e imágenes llegan con la clasificación de fase 4. */
+const KIND_TABS: Array<{ value: ItemKind | ""; label: string }> = [
+  { value: "", label: "Todo" },
+  { value: "video", label: "Vídeos" },
+  { value: "reel", label: "Reels" },
+  { value: "post", label: "Posts" },
+  { value: "link", label: "Enlaces" },
+];
 
 interface FeedPageProps {
-  searchParams: Promise<{ platform?: string; q?: string }>;
+  searchParams: Promise<{ platform?: string; q?: string; kind?: string }>;
 }
 
 export default async function FeedPage({ searchParams }: FeedPageProps) {
@@ -21,78 +36,119 @@ export default async function FeedPage({ searchParams }: FeedPageProps) {
   const platform = PLATFORMS.includes(params.platform as Platform)
     ? (params.platform as Platform)
     : undefined;
+  const kind = ITEM_KINDS.includes(params.kind as ItemKind)
+    ? (params.kind as ItemKind)
+    : undefined;
   const query = params.q?.trim() || undefined;
 
   const listItems = await makeListItems();
   const items = await listItems.execute(user.id, {
     platform,
+    kind,
     query,
     limit: 200,
   });
 
-  const chipHref = (next: { platform?: string; q?: string }) => {
+  // Construye hrefs conservando los filtros que no cambian.
+  const hrefFor = (next: { platform?: string; kind?: string; q?: string }) => {
     const search = new URLSearchParams();
     const p = next.platform ?? params.platform;
+    const k = next.kind ?? params.kind;
     const s = next.q ?? params.q;
     if (p) search.set("platform", p);
+    if (k) search.set("kind", k);
     if (s) search.set("q", s);
     const qs = search.toString();
     return qs ? `/?${qs}` : "/";
   };
 
+  const title = platform ? PLATFORM_LABELS[platform] : "Todo lo guardado";
+
   return (
     <div className="flex flex-col gap-6">
       <section className="flex flex-col gap-4" aria-label="Filtros y búsqueda">
-        <form action="/" method="get" className="flex gap-2">
-          <input
-            type="search"
-            name="q"
-            defaultValue={query ?? ""}
-            placeholder="Busca en lo que guardaste… (título, descripción, texto)"
-            aria-label="Buscar en mis guardados"
-            className="w-full rounded-lg border border-edge bg-surface px-3.5 py-2 text-sm placeholder:text-mute focus:border-accent"
-          />
-          {platform && <input type="hidden" name="platform" value={platform} />}
-          <button
-            type="submit"
-            className="shrink-0 rounded-lg bg-strong px-4 py-2 text-sm font-medium text-onstrong transition hover:opacity-90"
-          >
-            Buscar
-          </button>
-        </form>
-
-        <nav className="flex flex-wrap items-center gap-2 text-xs">
-          <Link
-            href={chipHref({ platform: "" })}
-            className={`rounded-full border px-3 py-1 transition ${
-              !platform
-                ? "border-strong bg-strong text-onstrong"
-                : "border-edge bg-surface text-body hover:border-mute"
-            }`}
-          >
-            Todo
-          </Link>
-          {PLATFORMS.map((p) => (
+        {/* Escritorio: título + tabs por tipo + búsqueda + botón de guardar */}
+        <div className="hidden lg:flex lg:flex-col lg:gap-4">
+          <div className="flex items-center justify-between gap-4">
+            <h1 className="font-display text-3xl font-bold tracking-tight text-ink">
+              {title}
+            </h1>
             <Link
-              key={p}
-              href={chipHref({ platform: p })}
+              href="/add"
+              aria-label="Guardar contenido"
+              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-fab text-white shadow-md transition hover:opacity-90"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                aria-hidden="true"
+                className="h-5 w-5"
+              >
+                <path d="M12 5v14" />
+                <path d="M5 12h14" />
+              </svg>
+            </Link>
+          </div>
+          <div className="flex items-center justify-between gap-4">
+            <nav aria-label="Filtrar por tipo" className="flex items-center gap-1 rounded-xl bg-elevated p-1">
+              {KIND_TABS.map((tab) => (
+                <Link
+                  key={tab.label}
+                  href={hrefFor({ kind: tab.value })}
+                  aria-current={kind === tab.value || (!kind && !tab.value) ? "page" : undefined}
+                  className={`rounded-lg px-3 py-1.5 text-sm transition ${
+                    kind === tab.value || (!kind && !tab.value)
+                      ? "bg-surface font-medium text-ink shadow-sm"
+                      : "text-mute hover:text-ink"
+                  }`}
+                >
+                  {tab.label}
+                </Link>
+              ))}
+            </nav>
+            <SearchForm platform={platform} kind={params.kind} defaultValue={query ?? ""} maxWidth="w-full max-w-sm" />
+          </div>
+        </div>
+
+        {/* Móvil: búsqueda + chips de plataforma (rediseño móvil pendiente) */}
+        <div className="flex flex-col gap-4 lg:hidden">
+          <SearchForm platform={platform} defaultValue={query ?? ""} />
+          <nav className="flex flex-wrap items-center gap-2 text-xs">
+            <Link
+              href={hrefFor({ platform: "" })}
               className={`rounded-full border px-3 py-1 transition ${
-                platform === p
+                !platform
                   ? "border-strong bg-strong text-onstrong"
                   : "border-edge bg-surface text-body hover:border-mute"
               }`}
             >
-              {PLATFORM_LABELS[p]}
+              Todo
             </Link>
-          ))}
-        </nav>
+            {PLATFORMS.map((p) => (
+              <Link
+                key={p}
+                href={hrefFor({ platform: p })}
+                className={`rounded-full border px-3 py-1 transition ${
+                  platform === p
+                    ? "border-strong bg-strong text-onstrong"
+                    : "border-edge bg-surface text-body hover:border-mute"
+                }`}
+              >
+                {PLATFORM_LABELS[p]}
+              </Link>
+            ))}
+          </nav>
+        </div>
       </section>
 
       {items.length === 0 ? (
         <section className="rounded-xl border border-dashed border-edge bg-surface p-10 text-center">
-          <h1 className="text-lg font-semibold text-ink">
-            {query || platform ? "Nada por aquí con ese filtro" : "Tu feed está vacío"}
-          </h1>
+          <h2 className="text-lg font-semibold text-ink">
+            {query || platform || kind ? "Nada por aquí con ese filtro" : "Tu feed está vacío"}
+          </h2>
           <p className="mx-auto mt-2 max-w-md text-sm text-mute">
             Guarda tu primer enlace pegando una URL, o espera a la fase 1 para
             capturar directamente desde el menú “Compartir” de tu Android.
@@ -107,7 +163,7 @@ export default async function FeedPage({ searchParams }: FeedPageProps) {
       ) : (
         <section
           aria-label="Contenido guardado"
-          className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+          className="columns-1 gap-4 sm:columns-2 xl:columns-3 2xl:columns-4"
         >
           {items.map((item) => (
             <ItemCard key={item.id} item={item} />
