@@ -3,12 +3,25 @@
 /*
  * Marker · estilos globales.
  *
+ * Paleta 60/30/10 en OKLCH (valores dados por el usuario):
+ *   60% crema    oklch(0.91 0.03 84)  → canvas claro; textos del tema oscuro
+ *   30% espresso oklch(0.29 0.04 44)  → canvas oscuro; textos del tema claro
+ *   10% violeta  oklch(0.53 0.26 265) → acento. SIN texto encima (blanco 2.8:1,
+ *     espresso 1.8:1): se usa solo en tintes y decoración (selection,
+ *     bg-accent/15). Botones, enlaces y foco usan `brand`, la sombra AA del
+ *     mismo matiz, resuelta numéricamente para cumplir WCAG.
+ *
  * Tema claro/oscuro con tokens semánticos: los valores crudos viven en pares
  * (--*-light/--*-dark) y el token activo se elige con @media
  * prefers-color-scheme; donde el navegador soporta light-dark() se delega en
  * él para que el tema siga vivo ante cambios de esquema en caliente.
  * Tailwind consume los tokens via @theme inline, así bg-surface, text-mute
  * etc. funcionan en ambos esquemas sin duplicar clases.
+ *
+ * Contrastes validados numéricamente (WCAG 2.x): texto 4.5:1, foco 3:1.
+ * En oscuro la rampa crema queda comprimida (el espresso del 30% tiene
+ * Y≈0.16, "claro" para un tema oscuro): body, mute y strong comparten
+ * valor y la jerarquía la aportan el peso y el tamaño tipográficos.
  */
 
 :root {
@@ -17,34 +30,38 @@
   color-scheme: light dark;
 
   /* ------- Valores crudos por esquema ------- */
-  --canvas-light: var(--color-zinc-50);
-  --canvas-dark: var(--color-zinc-950);
-  --surface-light: var(--color-white);
-  --surface-dark: var(--color-zinc-900);
-  --elevated-light: var(--color-zinc-100);
-  --elevated-dark: var(--color-zinc-800);
-  --edge-light: var(--color-zinc-200);
-  --edge-dark: var(--color-zinc-800);
-  --ink-light: var(--color-zinc-900);
-  --ink-dark: var(--color-zinc-50);
-  --text-light: var(--color-zinc-600);
-  --text-dark: var(--color-zinc-300);
-  --mute-light: var(--color-zinc-500);
-  --mute-dark: var(--color-zinc-400);
-  --strong-light: var(--color-zinc-900);
-  --strong-dark: var(--color-zinc-100);
-  --onstrong-light: var(--color-white);
-  --onstrong-dark: var(--color-zinc-950);
-  --accent-light: var(--color-indigo-600);
-  --accent-dark: var(--color-indigo-500);
-  --onaccent-light: var(--color-white);
-  --onaccent-dark: var(--color-white);
-  --fab-light: var(--color-red-600);
-  --fab-dark: var(--color-red-500);
-  --backdrop-light: oklch(0.84 0.06 286); /* lavanda del mock de referencia */
-  --backdrop-dark: oklch(0.07 0 0);
-  --scroll-thumb-light: var(--color-zinc-400);
-  --scroll-thumb-dark: var(--color-zinc-600);
+  /* 60% — crema (exacto) */
+  --canvas-light: oklch(0.91 0.03 84);
+  /* 30% — espresso (exacto) */
+  --canvas-dark: oklch(0.29 0.04 44);
+  --surface-light: oklch(0.94 0.02 84);
+  --surface-dark: oklch(0.3 0.04 44);
+  --elevated-light: oklch(0.86 0.04 84);
+  --elevated-dark: oklch(0.335 0.045 44);
+  --edge-light: oklch(0.78 0.05 84);
+  --edge-dark: oklch(0.44 0.05 44);
+  --ink-light: oklch(0.272 0.045 44);
+  --ink-dark: oklch(0.975 0.02 84);
+  --text-light: oklch(0.272 0.045 44);
+  --text-dark: oklch(0.96 0.02 84);
+  --mute-light: oklch(0.282 0.03 50);
+  --mute-dark: oklch(0.96 0.02 84);
+  --strong-light: oklch(0.272 0.045 44);
+  --strong-dark: oklch(0.96 0.02 84);
+  --onstrong-light: oklch(0.91 0.03 84);
+  --onstrong-dark: oklch(0.29 0.04 44);
+  /* 10% — violeta exacto (solo tintes y decoración) */
+  --accent-light: oklch(0.53 0.26 265);
+  --accent-dark: oklch(0.53 0.26 265);
+  /* Sombra AA del matiz del acento para interactivos */
+  --brand-light: oklch(0.364 0.22 265);
+  --brand-dark: oklch(0.965 0.024 265);
+  --onbrand-light: #fff;
+  --onbrand-dark: oklch(0.29 0.04 44);
+  --backdrop-light: oklch(0.87 0.05 265);
+  --backdrop-dark: oklch(0.215 0.04 44);
+  --scroll-thumb-light: oklch(0.72 0.04 84);
+  --scroll-thumb-dark: oklch(0.52 0.04 44);
 
   /* ------- Token activo: fallback con @media + light-dark() si existe ------- */
   --c-canvas: var(--canvas-light);
@@ -57,8 +74,8 @@
   --c-strong: var(--strong-light);
   --c-onstrong: var(--onstrong-light);
   --c-accent: var(--accent-light);
-  --c-onaccent: var(--onaccent-light);
-  --c-fab: var(--fab-light);
+  --c-brand: var(--brand-light);
+  --c-onbrand: var(--onbrand-light);
   --c-backdrop: var(--backdrop-light);
   --c-scroll-thumb: var(--scroll-thumb-light);
 
@@ -73,8 +90,8 @@
     --c-strong: var(--strong-dark);
     --c-onstrong: var(--onstrong-dark);
     --c-accent: var(--accent-dark);
-    --c-onaccent: var(--onaccent-dark);
-    --c-fab: var(--fab-dark);
+    --c-brand: var(--brand-dark);
+    --c-onbrand: var(--onbrand-dark);
     --c-backdrop: var(--backdrop-dark);
     --c-scroll-thumb: var(--scroll-thumb-dark);
   }
@@ -90,8 +107,8 @@
     --c-strong: light-dark(var(--strong-light), var(--strong-dark));
     --c-onstrong: light-dark(var(--onstrong-light), var(--onstrong-dark));
     --c-accent: light-dark(var(--accent-light), var(--accent-dark));
-    --c-onaccent: light-dark(var(--onaccent-light), var(--onaccent-dark));
-    --c-fab: light-dark(var(--fab-light), var(--fab-dark));
+    --c-brand: light-dark(var(--brand-light), var(--brand-dark));
+    --c-onbrand: light-dark(var(--onbrand-light), var(--onbrand-dark));
     --c-backdrop: light-dark(var(--backdrop-light), var(--backdrop-dark));
     --c-scroll-thumb: light-dark(var(--scroll-thumb-light), var(--scroll-thumb-dark));
   }
@@ -99,7 +116,9 @@
   /* Browser UI a tono con el tema (guía dark-mode). No se anima ni
    * transiciona scrollbar-color: en WebKit provoca flicker. */
   scrollbar-color: var(--c-scroll-thumb) transparent;
-  accent-color: var(--c-accent);
+  /* accent-color con brand: el violeta exacto queda a 2.5:1 sobre superficie
+   * clara (por debajo del 3:1 que pide la guía para controles); brand da 5:1. */
+  accent-color: var(--c-brand);
 }
 
 /* Utilidades semánticas para todos los componentes. */
@@ -114,8 +133,10 @@
   --color-strong: var(--c-strong);
   --color-onstrong: var(--c-onstrong);
   --color-accent: var(--c-accent);
-  --color-onaccent: var(--c-onaccent);
-  --color-fab: var(--c-fab);
+  --color-brand: var(--c-brand);
+  --color-onbrand: var(--c-onbrand);
+  /* El FAB hereda brand: antes era el rojo del mock; ahora manda la paleta. */
+  --color-fab: var(--c-brand);
   --color-backdrop: var(--c-backdrop);
 
   /* Tipografía: las vars las instancia next/font en <html>. */
@@ -131,7 +152,7 @@ html {
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-accent);
+  outline: 2px solid var(--color-brand);
   outline-offset: 2px;
 }
 

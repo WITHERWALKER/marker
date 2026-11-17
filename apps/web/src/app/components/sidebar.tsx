@@ -32,7 +32,7 @@ export function Sidebar({ email }: { email: string | null }) {
           <div className="border-b border-edge pb-6">
             <span
               aria-hidden="true"
-              className="mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-accent/15 text-sm font-semibold text-accent"
+              className="mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-brand text-sm font-semibold text-onbrand"
             >
               {initials}
             </span>

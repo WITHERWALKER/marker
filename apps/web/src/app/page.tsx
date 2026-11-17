@@ -76,7 +76,7 @@ export default async function FeedPage({ searchParams }: FeedPageProps) {
             <Link
               href="/add"
               aria-label="Guardar contenido"
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-fab text-white shadow-md transition hover:opacity-90"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-fab text-onbrand shadow-md transition hover:opacity-90"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -155,7 +155,7 @@ export default async function FeedPage({ searchParams }: FeedPageProps) {
           </p>
           <Link
             href="/add"
-            className="mt-4 inline-block rounded-full bg-accent px-4 py-2 text-sm font-medium text-onaccent transition hover:opacity-90"
+            className="mt-4 inline-block rounded-full bg-brand px-4 py-2 text-sm font-medium text-onbrand transition hover:opacity-90"
           >
             Guardar mi primer enlace
           </Link>

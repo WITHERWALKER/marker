@@ -67,7 +67,7 @@ export default async function RootLayout({
                   viewBox="0 0 24 24"
                   fill="currentColor"
                   aria-hidden="true"
-                  className="h-5 w-5 text-accent"
+                  className="h-5 w-5 text-brand"
                 >
                   <path d="M6 3a2 2 0 0 0-2 2v16l8-5 8 5V5a2 2 0 0 0-2-2H6Z" />
                 </svg>

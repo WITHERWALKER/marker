@@ -143,7 +143,7 @@ export default async function ImportPage({ searchParams }: ImportPageProps) {
         </div>
         <button
           type="submit"
-          className="shrink-0 rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-onaccent transition hover:opacity-90"
+          className="shrink-0 rounded-full bg-brand px-5 py-2.5 text-sm font-medium text-onbrand transition hover:opacity-90"
         >
           Importar
         </button>

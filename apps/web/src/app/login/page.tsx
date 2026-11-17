@@ -48,7 +48,7 @@ export default function LoginPage() {
             href="http://localhost:54334"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-accent hover:underline"
+            className="text-brand hover:underline"
           >
             localhost:54334
           </a>
@@ -75,7 +75,7 @@ export default function LoginPage() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="tu@correo.com"
-          className="w-full rounded-lg border border-edge bg-surface px-3.5 py-2.5 text-sm focus:border-accent"
+          className="w-full rounded-lg border border-edge bg-surface px-3.5 py-2.5 text-sm focus:border-brand"
         />
         <button
           type="submit"

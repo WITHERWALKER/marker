@@ -19,7 +19,7 @@ export function SearchForm({ platform, kind, defaultValue, maxWidth, compact }: 
       <form
         action="/"
         method="get"
-        className="flex w-56 items-center gap-2 rounded-full bg-elevated px-4 py-2 transition-all focus-within:w-72 focus-within:ring-1 focus-within:ring-edge"
+        className="flex w-56 items-center gap-2 rounded-full bg-surface px-4 py-2 shadow-sm transition-all focus-within:w-72 focus-within:ring-1 focus-within:ring-edge"
       >
         <svg
           viewBox="0 0 24 24"
@@ -55,7 +55,7 @@ export function SearchForm({ platform, kind, defaultValue, maxWidth, compact }: 
         defaultValue={defaultValue}
         placeholder="Busca en lo que guardaste…"
         aria-label="Buscar en mis guardados"
-        className="w-full rounded-lg border border-edge bg-surface px-3.5 py-2 text-sm placeholder:text-mute focus:border-accent"
+        className="w-full rounded-lg border border-edge bg-surface px-3.5 py-2 text-sm placeholder:text-mute focus:border-brand"
       />
       {platform && <input type="hidden" name="platform" value={platform} />}
       {kind && <input type="hidden" name="kind" value={kind} />}

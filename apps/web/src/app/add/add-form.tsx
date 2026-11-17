@@ -36,7 +36,7 @@ export function AddForm({ initialUrl }: AddFormProps) {
           required
           defaultValue={initialUrl}
           placeholder="https://www.instagram.com/reel/…"
-          className="w-full rounded-lg border border-edge bg-surface px-3.5 py-2.5 text-sm placeholder:text-mute focus:border-accent"
+          className="w-full rounded-lg border border-edge bg-surface px-3.5 py-2.5 text-sm placeholder:text-mute focus:border-brand"
         />
 
         <label htmlFor="text" className="text-sm font-medium text-body">
@@ -47,14 +47,14 @@ export function AddForm({ initialUrl }: AddFormProps) {
           name="text"
           rows={3}
           placeholder="¿Por qué lo guardas? Palabras que te ayudarán a encontrarlo"
-          className="w-full rounded-lg border border-edge bg-surface px-3.5 py-2.5 text-sm placeholder:text-mute focus:border-accent"
+          className="w-full rounded-lg border border-edge bg-surface px-3.5 py-2.5 text-sm placeholder:text-mute focus:border-brand"
         />
 
         <div className="flex items-center gap-3">
           <button
             type="submit"
             disabled={pending}
-            className="rounded-full bg-accent px-5 py-2 text-sm font-medium text-onaccent transition hover:opacity-90 disabled:opacity-50"
+            className="rounded-full bg-brand px-5 py-2 text-sm font-medium text-onbrand transition hover:opacity-90 disabled:opacity-50"
           >
             {pending ? "Guardando…" : "Guardar"}
           </button>

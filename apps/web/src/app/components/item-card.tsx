@@ -39,7 +39,6 @@ const PLACEHOLDER_GRADIENTS: Record<Platform, string> = {
  * (stretched-link).
  */
 export function ItemCard({ item }: { item: Item }) {
-  const hasThumb = Boolean(item.thumbnailUrl);
   const statusNote =
     item.status === "pending"
       ? "Procesando metadata…"
@@ -49,7 +48,7 @@ export function ItemCard({ item }: { item: Item }) {
 
   return (
     <article
-      className={`group relative mb-5 break-inside-avoid overflow-hidden rounded-3xl bg-elevated transition hover:shadow-lg hover:brightness-[1.03] has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-accent ${MEDIA_ASPECT[item.kind] ?? "aspect-[4/3]"}`}
+      className={`group relative mb-5 break-inside-avoid overflow-hidden rounded-3xl bg-elevated transition hover:shadow-lg hover:brightness-[1.03] has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-brand ${MEDIA_ASPECT[item.kind] ?? "aspect-[4/3]"}`}
     >
       {item.thumbnailUrl ? (
         // eslint-disable-next-line @next/next/no-img-element
@@ -68,13 +67,12 @@ export function ItemCard({ item }: { item: Item }) {
         />
       )}
 
-      {/* Velo para que el texto blanco se lea sobre cualquier foto */}
-      {hasThumb && (
-        <span
-          aria-hidden="true"
-          className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/15 to-black/55"
-        />
-      )}
+      {/* Velo para que el texto blanco se lea sobre cualquier foto o
+       * gradiente de placeholder (siempre, no solo con thumbnail) */}
+      <span
+        aria-hidden="true"
+        className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/20 to-black/60"
+      />
 
       {/* Play al centro en vídeos y reels, como en la referencia */}
       {(item.kind === "video" || item.kind === "reel") && (
@@ -101,13 +99,13 @@ export function ItemCard({ item }: { item: Item }) {
             </a>
           </h2>
           {(item.description || statusNote) && (
-            <p className="mt-2 line-clamp-2 text-sm text-white/80" title={item.errorMessage ?? undefined}>
+            <p className="mt-2 line-clamp-2 text-sm text-white/85" title={item.errorMessage ?? undefined}>
               {item.description ?? statusNote}
             </p>
           )}
         </div>
 
-        <div className="flex items-center justify-between gap-3 text-[11px] font-medium text-white/75">
+        <div className="flex items-center justify-between gap-3 text-[11px] font-medium text-white/85">
           <span className="flex items-center gap-1.5">
             <span aria-hidden="true" className={`h-1.5 w-1.5 rounded-full ${PLATFORM_DOTS[item.platform]}`} />
             {PLATFORM_LABELS[item.platform]}
