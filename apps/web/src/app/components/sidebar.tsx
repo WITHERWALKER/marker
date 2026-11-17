@@ -54,7 +54,7 @@ export function Sidebar({
           title="Marker"
           className="flex min-h-11 items-center gap-2 text-ink"
         >
-          <MarkerLogo className="h-6 w-6" />
+          <MarkerLogo className="size-6" />
           {!collapsed && (
             <span className="font-display text-lg font-bold tracking-tight">
               Marker
