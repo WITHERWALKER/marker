@@ -41,6 +41,8 @@ export interface Item {
   status: ItemStatus;
   errorMessage: string | null;
   source: ItemSource;
+  /** Nombres de etiqueta del usuario. Vacío hasta que se asignen. */
+  tags: string[];
   createdAt: string;
   updatedAt: string;
   savedAt: string;

@@ -6,6 +6,7 @@ import type {
   ItemStatus,
   Platform,
 } from "@/core/domain/item";
+import { uniqueTags } from "@/core/domain/tag";
 import type {
   ItemPatch,
   ItemRepository,
@@ -79,6 +80,7 @@ function toDomain(row: ItemRow): Item {
     status: row.status as ItemStatus,
     errorMessage: row.error_message,
     source: row.source as ItemSource,
+    tags: [],
     createdAt: row.created_at,
     updatedAt: row.updated_at,
     savedAt: row.saved_at,
@@ -142,6 +144,28 @@ export class SupabaseItemRepository implements ItemRepository {
     if (options.platform) query = query.eq("platform", options.platform);
     if (options.kind) query = query.eq("kind", options.kind);
 
+    const tagName = options.tag?.trim().replace(/[%_]/g, "");
+    if (tagName) {
+      const { data: tagRows, error: tagError } = await this.client
+        .from("tags")
+        .select("id")
+        .eq("user_id", userId)
+        .ilike("name", tagName)
+        .returns<{ id: string }[]>();
+      if (tagError) throw new Error(`list tag: ${tagError.message}`);
+      const tagIds = (tagRows ?? []).map((row) => row.id);
+      if (tagIds.length === 0) return [];
+      const { data: links, error: linkError } = await this.client
+        .from("item_tags")
+        .select("item_id")
+        .in("tag_id", tagIds)
+        .returns<{ item_id: string }[]>();
+      if (linkError) throw new Error(`list tag: ${linkError.message}`);
+      const ids = (links ?? []).map((link) => link.item_id);
+      if (ids.length === 0) return [];
+      query = query.in("id", ids);
+    }
+
     const text = options.query?.trim();
     if (text) {
       // ilike con comodines: escapamos los caracteres que significan algo
@@ -155,7 +179,103 @@ export class SupabaseItemRepository implements ItemRepository {
 
     const { data, error } = await query.returns<ItemRow[]>();
     if (error) throw new Error(`list: ${error.message}`);
-    return (data ?? []).map(toDomain);
+    return this.attachTags((data ?? []).map(toDomain));
+  }
+
+  /** Junta los nombres de `tags` vía `item_tags` para pintar los badges. */
+  private async attachTags(items: Item[]): Promise<Item[]> {
+    if (items.length === 0) return items;
+    const { data, error } = await this.client
+      .from("item_tags")
+      .select("item_id, tags(name)")
+      .in(
+        "item_id",
+        items.map((item) => item.id),
+      );
+    if (error) throw new Error(`attachTags: ${error.message}`);
+
+    const byItem = new Map<string, string[]>();
+    for (const row of data ?? []) {
+      const linked = row.tags as { name: string } | { name: string }[] | null;
+      const name = Array.isArray(linked) ? linked[0]?.name : linked?.name;
+      if (!name) continue;
+      const names = byItem.get(row.item_id) ?? [];
+      names.push(name);
+      byItem.set(row.item_id, names);
+    }
+
+    return items.map((item) => ({ ...item, tags: byItem.get(item.id) ?? [] }));
+  }
+
+  async delete(userId: string, itemId: string): Promise<void> {
+    const { error } = await this.client.from("items").delete().eq("user_id", userId).eq("id", itemId);
+    if (error) throw new Error(`delete: ${error.message}`);
+  }
+
+  async listTagNames(userId: string): Promise<string[]> {
+    const { data, error } = await this.client
+      .from("tags")
+      .select("name")
+      .eq("user_id", userId)
+      .order("name")
+      .returns<{ name: string }[]>();
+    if (error) throw new Error(`listTagNames: ${error.message}`);
+    return uniqueTags((data ?? []).map((row) => row.name));
+  }
+
+  async replaceTags(userId: string, itemId: string, names: string[]): Promise<void> {
+    const clean = uniqueTags(names);
+
+    const { data: owned, error: ownError } = await this.client
+      .from("items")
+      .select("id")
+      .eq("user_id", userId)
+      .eq("id", itemId)
+      .maybeSingle();
+    if (ownError) throw new Error(`replaceTags: ${ownError.message}`);
+    if (!owned) return;
+
+    const { error: clearError } = await this.client.from("item_tags").delete().eq("item_id", itemId);
+    if (clearError) throw new Error(`replaceTags: ${clearError.message}`);
+    if (clean.length === 0) return;
+
+    const tagIds: string[] = [];
+    for (const name of clean) {
+      const { data: existing, error: findError } = await this.client
+        .from("tags")
+        .select("id, name")
+        .eq("user_id", userId)
+        .ilike("name", name.replace(/[%_]/g, ""))
+        .limit(1)
+        .returns<{ id: string; name: string }[]>();
+      if (findError) throw new Error(`replaceTags: ${findError.message}`);
+
+      const found = existing?.[0];
+      if (found) {
+        if (found.name !== name) {
+          const { error: renameError } = await this.client
+            .from("tags")
+            .update({ name })
+            .eq("id", found.id);
+          if (renameError) throw new Error(`replaceTags: ${renameError.message}`);
+        }
+        tagIds.push(found.id);
+        continue;
+      }
+
+      const { data, error } = await this.client
+        .from("tags")
+        .upsert({ user_id: userId, name }, { onConflict: "user_id,name" })
+        .select("id")
+        .single<{ id: string }>();
+      if (error) throw new Error(`replaceTags: ${error.message}`);
+      tagIds.push(data.id);
+    }
+
+    const { error: linkError } = await this.client
+      .from("item_tags")
+      .insert(tagIds.map((tagId) => ({ item_id: itemId, tag_id: tagId })));
+    if (linkError) throw new Error(`replaceTags: ${linkError.message}`);
   }
 
   async listByStatus(userId: string, status: ItemStatus, limit: number): Promise<Item[]> {

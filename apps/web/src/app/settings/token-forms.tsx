@@ -33,7 +33,7 @@ export function CreateTokenForm() {
             type="text"
             required
             defaultValue="Extensión de navegador"
-            className="w-full rounded-lg border border-edge bg-surface px-3 py-2 text-sm focus:border-brand"
+            className="w-full rounded-lg border border-edge bg-canvas px-3 py-2 text-sm"
           />
         </div>
         <button

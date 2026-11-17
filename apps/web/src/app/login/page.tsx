@@ -36,7 +36,7 @@ export default function LoginPage() {
 
   if (sent) {
     return (
-      <div className="mx-auto max-w-md rounded-xl border border-edge bg-surface p-8 text-center">
+      <div className="mx-auto max-w-md rounded-2xl border border-edge bg-elevated p-8 text-center">
         <h1 className="text-lg font-semibold">Revisa tu correo</h1>
         <p className="mt-2 text-sm text-mute">
           Te enviamos un enlace mágico a <strong>{email}</strong>. Ábrelo desde
@@ -48,7 +48,7 @@ export default function LoginPage() {
             href="http://localhost:54334"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-brand hover:underline"
+            className="link-cobalto text-xs"
           >
             localhost:54334
           </a>
@@ -58,7 +58,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="mx-auto max-w-md rounded-xl border border-edge bg-surface p-8">
+    <div className="mx-auto max-w-md rounded-2xl border border-edge bg-elevated p-8">
       <h1 className="text-lg font-semibold tracking-tight">Entrar en Marker</h1>
       <p className="mt-1 text-sm text-mute">
         Sin contraseñas: te enviamos un enlace mágico a tu correo.
@@ -75,12 +75,12 @@ export default function LoginPage() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="tu@correo.com"
-          className="w-full rounded-lg border border-edge bg-surface px-3.5 py-2.5 text-sm focus:border-brand"
+          className="w-full rounded-lg border border-edge bg-canvas px-3.5 py-2.5 text-sm"
         />
         <button
           type="submit"
           disabled={loading}
-          className="rounded-full bg-strong px-5 py-2 text-sm font-medium text-onstrong transition hover:opacity-90 disabled:opacity-50"
+          className="rounded-full bg-brand px-5 py-2 text-sm font-medium text-onbrand transition hover:opacity-90 disabled:opacity-50"
         >
           {loading ? "Enviando…" : "Enviar enlace mágico"}
         </button>

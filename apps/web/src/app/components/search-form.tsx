@@ -1,67 +1,107 @@
+"use client";
+
+import { Search, X } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+
 /**
- * Formulario de búsqueda GET. Compartido por el header de escritorio y la
- * sección móvil del feed; conserva plataforma y tipo activos en hidden inputs.
- * La variante compacta es la píldora con lupa del header de escritorio (se
- * envía con Enter; un form de un solo campo no necesita botón visible).
+ * Búsqueda GET del feed. Conserva plataforma, tipo y etiqueta.
+ * Vaciar el texto quita la búsqueda de la URL: el feed deja de estar filtrado.
  */
 
 interface SearchFormProps {
   platform?: string;
   kind?: string;
+  tag?: string;
   defaultValue?: string;
   maxWidth?: string;
   compact?: boolean;
 }
 
-export function SearchForm({ platform, kind, defaultValue, maxWidth, compact }: SearchFormProps) {
+export function SearchForm({ platform, kind, tag, defaultValue = "", maxWidth, compact }: SearchFormProps) {
+  const router = useRouter();
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [value, setValue] = useState(defaultValue);
+
+  function clearedHref(): string {
+    const search = new URLSearchParams();
+    if (platform) search.set("platform", platform);
+    if (kind) search.set("kind", kind);
+    if (tag) search.set("tag", tag);
+    const qs = search.toString();
+    return qs ? `/?${qs}` : "/";
+  }
+
+  function clearSearch() {
+    setValue("");
+    if (defaultValue.trim().length > 0) router.push(clearedHref());
+  }
+
+  function onChange(next: string) {
+    setValue(next);
+    if (next === "" && defaultValue.trim().length > 0) router.push(clearedHref());
+  }
+
+  useEffect(() => {
+    const input = inputRef.current;
+    if (!input) return;
+    function onSearch(event: Event) {
+      const next = (event.currentTarget as HTMLInputElement).value;
+      if (next !== "") return;
+      setValue("");
+      if (defaultValue.trim().length > 0) router.push(clearedHref());
+    }
+    input.addEventListener("search", onSearch);
+    return () => input.removeEventListener("search", onSearch);
+  }, [defaultValue, platform, kind, tag, router]);
+
+  const field = (
+    <>
+      <Search aria-hidden strokeWidth={1.5} className="size-4 shrink-0 text-ink" />
+      <input
+        ref={inputRef}
+        type="search"
+        name="q"
+        value={value}
+        placeholder={compact ? "Busca en lo guardado…" : "Busca en lo que guardaste…"}
+        aria-label="Buscar en mis guardados"
+        enterKeyHint="search"
+        autoComplete="off"
+        className="field-quiet min-w-0 flex-1 bg-transparent text-sm text-ink placeholder:text-mute"
+        onChange={(event) => onChange(event.target.value)}
+      />
+      {value.length > 0 ? (
+        <button
+          type="button"
+          aria-label="Quitar búsqueda"
+          onClick={clearSearch}
+          className="grid size-7 shrink-0 place-items-center rounded-full text-mute hover:bg-ink/10 hover:text-ink"
+        >
+          <X aria-hidden strokeWidth={1.5} className="size-3.5" />
+        </button>
+      ) : null}
+      {platform ? <input type="hidden" name="platform" value={platform} /> : null}
+      {kind ? <input type="hidden" name="kind" value={kind} /> : null}
+      {tag ? <input type="hidden" name="tag" value={tag} /> : null}
+    </>
+  );
+
   if (compact) {
     return (
-      <form
-        action="/"
-        method="get"
-        className="flex w-56 items-center gap-2 rounded-full bg-surface px-4 py-2 shadow-sm transition-all focus-within:w-72 focus-within:ring-1 focus-within:ring-edge"
-      >
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          aria-hidden="true"
-          className="h-4 w-4 shrink-0 text-mute"
-        >
-          <circle cx="11" cy="11" r="7" />
-          <path d="m20 20-3.5-3.5" />
-        </svg>
-        <input
-          type="search"
-          name="q"
-          defaultValue={defaultValue}
-          placeholder="Busca en lo guardado…"
-          aria-label="Buscar en mis guardados"
-          className="w-full bg-transparent text-sm text-ink outline-none placeholder:text-mute"
-        />
-        {platform && <input type="hidden" name="platform" value={platform} />}
-        {kind && <input type="hidden" name="kind" value={kind} />}
+      <form action="/" method="get" className="field flex h-11 w-72 items-center gap-2 rounded-full border border-edge bg-canvas px-3">
+        {field}
       </form>
     );
   }
 
   return (
     <form action="/" method="get" className={`flex gap-2 ${maxWidth ?? ""}`}>
-      <input
-        type="search"
-        name="q"
-        defaultValue={defaultValue}
-        placeholder="Busca en lo que guardaste…"
-        aria-label="Buscar en mis guardados"
-        className="w-full rounded-lg border border-edge bg-surface px-3.5 py-2 text-sm placeholder:text-mute focus:border-brand"
-      />
-      {platform && <input type="hidden" name="platform" value={platform} />}
-      {kind && <input type="hidden" name="kind" value={kind} />}
+      <div className="field flex h-11 min-w-0 flex-1 items-center gap-2 rounded-xl border border-edge bg-canvas px-3">
+        {field}
+      </div>
       <button
         type="submit"
-        className="shrink-0 rounded-lg bg-strong px-4 py-2 text-sm font-medium text-onstrong transition hover:opacity-90"
+        className="shrink-0 rounded-full bg-strong px-4 text-sm font-medium text-onstrong motion-safe:transition hover:opacity-90"
       >
         Buscar
       </button>

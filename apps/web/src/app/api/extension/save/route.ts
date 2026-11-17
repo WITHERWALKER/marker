@@ -6,6 +6,8 @@ import { makeSaveItemForClient } from "@/infrastructure/composition";
 import { createSupabaseAnonClient } from "@/infrastructure/supabase/client.anon";
 import { createSupabaseUserClient } from "@/infrastructure/supabase/client.user";
 import { supabaseJwtSecret } from "@/infrastructure/supabase/env";
+import { uniqueTags } from "@/core/domain/tag";
+import { SupabaseItemRepository } from "@/infrastructure/supabase/item-repository";
 
 /**
  * API de la extensión (y futuros clientes de token).
@@ -22,6 +24,12 @@ interface SavePayload {
   url?: string;
   text?: string | null;
   title?: string | null;
+  tags?: string[] | string | null;
+}
+
+function parseTags(raw: SavePayload["tags"]): string[] {
+  const parts = Array.isArray(raw) ? raw : typeof raw === "string" ? raw.split(",") : [];
+  return uniqueTags(parts);
 }
 
 function bearerToken(request: Request): string | null {
@@ -78,6 +86,11 @@ export async function POST(request: Request) {
         { ok: false, error: result.reason, message: result.message },
         { status: 400 },
       );
+    }
+
+    const tags = parseTags(payload?.tags);
+    if (!result.duplicated && tags.length > 0) {
+      await new SupabaseItemRepository(userClient).replaceTags(userId, result.item.id, tags);
     }
 
     revalidatePath("/");

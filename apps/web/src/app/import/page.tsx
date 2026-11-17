@@ -98,7 +98,7 @@ export default async function ImportPage({ searchParams }: ImportPageProps) {
       {pending > 0 && (
         <section
           aria-labelledby="enrich-heading"
-          className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-5 text-sm text-amber-700 dark:text-amber-400"
+          className="rounded-xl border border-edge bg-canvas p-5 text-sm text-body"
         >
           <h2 id="enrich-heading" className="font-semibold">
             Pendientes de enriquecer: {pending}
@@ -113,7 +113,7 @@ export default async function ImportPage({ searchParams }: ImportPageProps) {
           <form action="/api/enrich-pending" method="post" className="mt-3">
             <button
               type="submit"
-              className="rounded-full bg-amber-500 px-5 py-2.5 text-sm font-medium text-zinc-950 transition hover:bg-amber-400"
+              className="rounded-full bg-strong px-5 py-2.5 text-sm font-medium text-onstrong transition hover:opacity-90"
             >
               Enriquecer ahora
             </button>

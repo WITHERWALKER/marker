@@ -33,6 +33,7 @@ export interface ListItemsOptions {
   platform?: Platform;
   kind?: ItemKind;
   query?: string;
+  tag?: string;
   limit?: number;
 }
 
@@ -49,6 +50,12 @@ export interface ItemRepository {
   findByCanonicalUrls(userId: string, canonicalUrls: string[]): Promise<string[]>;
   /** Inserta en bloque; devuelve cuántas filas entró */
   createMany(userId: string, items: NewItem[]): Promise<number>;
+  /** Borra un item del usuario. Las etiquetas se van en cascada. */
+  delete(userId: string, itemId: string): Promise<void>;
+  /** Sustituye las etiquetas del item por esta lista de nombres. */
+  replaceTags(userId: string, itemId: string, names: string[]): Promise<void>;
+  /** Nombres de etiquetas del usuario, para sugerirlas al escribir. */
+  listTagNames(userId: string): Promise<string[]>;
 }
 
 /** Metadata obtenida desde la fuente (OpenGraph, oEmbed...) */

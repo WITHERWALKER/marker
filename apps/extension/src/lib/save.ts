@@ -47,6 +47,7 @@ export async function saveToMarker(input: {
   url: string;
   text?: string | null;
   title?: string | null;
+  tags?: string[];
 }): Promise<SaveOutcome> {
   const { apiBase, token } = input.settings;
   try {
@@ -60,6 +61,7 @@ export async function saveToMarker(input: {
         url: input.url,
         text: input.text ?? null,
         title: input.title ?? null,
+        tags: input.tags ?? [],
       }),
     });
     const body = (await response.json().catch(() => null)) as SaveResponse | null;

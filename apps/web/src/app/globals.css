@@ -1,127 +1,49 @@
 @import "tailwindcss";
 
 /*
- * Marker · estilos globales.
- *
- * Paleta 60/30/10 en OKLCH (valores dados por el usuario):
- *   60% crema    oklch(0.91 0.03 84)  → canvas claro; textos del tema oscuro
- *   30% espresso oklch(0.29 0.04 44)  → canvas oscuro; textos del tema claro
- *   10% violeta  oklch(0.53 0.26 265) → acento. SIN texto encima (blanco 2.8:1,
- *     espresso 1.8:1): se usa solo en tintes y decoración (selection,
- *     bg-accent/15). Botones, enlaces y foco usan `brand`, la sombra AA del
- *     mismo matiz, resuelta numéricamente para cumplir WCAG.
- *
- * Tema claro/oscuro con tokens semánticos: los valores crudos viven en pares
- * (--*-light/--*-dark) y el token activo se elige con @media
- * prefers-color-scheme; donde el navegador soporta light-dark() se delega en
- * él para que el tema siga vivo ante cambios de esquema en caliente.
- * Tailwind consume los tokens via @theme inline, así bg-surface, text-mute
- * etc. funcionan en ambos esquemas sin duplicar clases.
- *
- * Contrastes validados numéricamente (WCAG 2.x): texto 4.5:1, foco 3:1.
- * En oscuro la rampa crema queda comprimida (el espresso del 30% tiene
- * Y≈0.16, "claro" para un tema oscuro): body, mute y strong comparten
- * valor y la jerarquía la aportan el peso y el tamaño tipográficos.
+ * Paleta ALBA (hex fijos): Avena #EAE0CD (60 %) · Chocolate #3D2318 (30 %) ·
+ * Cobalto #1F4FFF (10 %). Los tres porcentajes son sobre el MISMO tema: en
+ * oscuro del SO no se invierte a “fondo chocolate”; el 60 % sigue siendo Avena
+ * (ligeramente amortiguada), el texto sigue Chocolate.
  */
 
 :root {
-  /* MANDATORIO: el esquema se declara en la raíz (nunca solo en body) para
-   * que scrollbars, form controls y el canvas del documento sigan el tema. */
-  color-scheme: light dark;
+  color-scheme: light;
 
-  /* ------- Valores crudos por esquema ------- */
-  /* 60% — crema (exacto) */
-  --canvas-light: oklch(0.91 0.03 84);
-  /* 30% — espresso (exacto) */
-  --canvas-dark: oklch(0.29 0.04 44);
-  --surface-light: oklch(0.94 0.02 84);
-  --surface-dark: oklch(0.3 0.04 44);
-  --elevated-light: oklch(0.86 0.04 84);
-  --elevated-dark: oklch(0.335 0.045 44);
-  --edge-light: oklch(0.78 0.05 84);
-  --edge-dark: oklch(0.44 0.05 44);
-  --ink-light: oklch(0.272 0.045 44);
-  --ink-dark: oklch(0.975 0.02 84);
-  --text-light: oklch(0.272 0.045 44);
-  --text-dark: oklch(0.96 0.02 84);
-  --mute-light: oklch(0.282 0.03 50);
-  --mute-dark: oklch(0.96 0.02 84);
-  --strong-light: oklch(0.272 0.045 44);
-  --strong-dark: oklch(0.96 0.02 84);
-  --onstrong-light: oklch(0.91 0.03 84);
-  --onstrong-dark: oklch(0.29 0.04 44);
-  /* 10% — violeta exacto (solo tintes y decoración) */
-  --accent-light: oklch(0.53 0.26 265);
-  --accent-dark: oklch(0.53 0.26 265);
-  /* Sombra AA del matiz del acento para interactivos */
-  --brand-light: oklch(0.364 0.22 265);
-  --brand-dark: oklch(0.965 0.024 265);
-  --onbrand-light: #fff;
-  --onbrand-dark: oklch(0.29 0.04 44);
-  --backdrop-light: oklch(0.87 0.05 265);
-  --backdrop-dark: oklch(0.215 0.04 44);
-  --scroll-thumb-light: oklch(0.72 0.04 84);
-  --scroll-thumb-dark: oklch(0.52 0.04 44);
+  --avena: #eae0cd;
+  --chocolate: #3d2318;
+  --cobalto: #1f4fff;
 
-  /* ------- Token activo: fallback con @media + light-dark() si existe ------- */
-  --c-canvas: var(--canvas-light);
-  --c-surface: var(--surface-light);
-  --c-elevated: var(--elevated-light);
-  --c-edge: var(--edge-light);
-  --c-ink: var(--ink-light);
-  --c-text: var(--text-light);
-  --c-mute: var(--mute-light);
-  --c-strong: var(--strong-light);
-  --c-onstrong: var(--onstrong-light);
-  --c-accent: var(--accent-light);
-  --c-brand: var(--brand-light);
-  --c-onbrand: var(--onbrand-light);
-  --c-backdrop: var(--backdrop-light);
-  --c-scroll-thumb: var(--scroll-thumb-light);
+  --c-canvas: var(--avena);
+  --c-surface: var(--avena);
+  --c-backdrop: var(--avena);
+  --c-elevated: color-mix(in srgb, var(--chocolate) 7%, var(--avena));
+  --c-edge: color-mix(in srgb, var(--chocolate) 22%, var(--avena));
+  --c-ink: var(--chocolate);
+  --c-text: var(--chocolate);
+  --c-mute: color-mix(in srgb, var(--chocolate) 62%, var(--avena));
+  --c-strong: var(--chocolate);
+  --c-onstrong: var(--avena);
+  --c-accent: var(--cobalto);
+  --c-brand: var(--cobalto);
+  --c-onbrand: #ffffff;
+  --c-scroll-thumb: color-mix(in srgb, var(--chocolate) 35%, var(--avena));
 
   @media (prefers-color-scheme: dark) {
-    --c-canvas: var(--canvas-dark);
-    --c-surface: var(--surface-dark);
-    --c-elevated: var(--elevated-dark);
-    --c-edge: var(--edge-dark);
-    --c-ink: var(--ink-dark);
-    --c-text: var(--text-dark);
-    --c-mute: var(--mute-dark);
-    --c-strong: var(--strong-dark);
-    --c-onstrong: var(--onstrong-dark);
-    --c-accent: var(--accent-dark);
-    --c-brand: var(--brand-dark);
-    --c-onbrand: var(--onbrand-dark);
-    --c-backdrop: var(--backdrop-dark);
-    --c-scroll-thumb: var(--scroll-thumb-dark);
+    /* Comodidad nocturna sin romper 60 / 30 / 10 */
+    --c-canvas: color-mix(in srgb, #000000 8%, var(--avena));
+    --c-surface: var(--c-canvas);
+    --c-backdrop: color-mix(in srgb, #000000 11%, var(--avena));
+    --c-elevated: color-mix(in srgb, var(--chocolate) 10%, var(--avena));
+    --c-edge: color-mix(in srgb, var(--chocolate) 28%, var(--avena));
+    --c-mute: color-mix(in srgb, var(--chocolate) 55%, var(--avena));
+    --c-scroll-thumb: color-mix(in srgb, var(--chocolate) 40%, var(--avena));
   }
 
-  @supports (color: light-dark(#000, #fff)) {
-    --c-canvas: light-dark(var(--canvas-light), var(--canvas-dark));
-    --c-surface: light-dark(var(--surface-light), var(--surface-dark));
-    --c-elevated: light-dark(var(--elevated-light), var(--elevated-dark));
-    --c-edge: light-dark(var(--edge-light), var(--edge-dark));
-    --c-ink: light-dark(var(--ink-light), var(--ink-dark));
-    --c-text: light-dark(var(--text-light), var(--text-dark));
-    --c-mute: light-dark(var(--mute-light), var(--mute-dark));
-    --c-strong: light-dark(var(--strong-light), var(--strong-dark));
-    --c-onstrong: light-dark(var(--onstrong-light), var(--onstrong-dark));
-    --c-accent: light-dark(var(--accent-light), var(--accent-dark));
-    --c-brand: light-dark(var(--brand-light), var(--brand-dark));
-    --c-onbrand: light-dark(var(--onbrand-light), var(--onbrand-dark));
-    --c-backdrop: light-dark(var(--backdrop-light), var(--backdrop-dark));
-    --c-scroll-thumb: light-dark(var(--scroll-thumb-light), var(--scroll-thumb-dark));
-  }
-
-  /* Browser UI a tono con el tema (guía dark-mode). No se anima ni
-   * transiciona scrollbar-color: en WebKit provoca flicker. */
   scrollbar-color: var(--c-scroll-thumb) transparent;
-  /* accent-color con brand: el violeta exacto queda a 2.5:1 sobre superficie
-   * clara (por debajo del 3:1 que pide la guía para controles); brand da 5:1. */
-  accent-color: var(--c-brand);
+  accent-color: var(--c-strong);
 }
 
-/* Utilidades semánticas para todos los componentes. */
 @theme inline {
   --color-canvas: var(--c-canvas);
   --color-surface: var(--c-surface);
@@ -135,27 +57,73 @@
   --color-accent: var(--c-accent);
   --color-brand: var(--c-brand);
   --color-onbrand: var(--c-onbrand);
-  /* El FAB hereda brand: antes era el rojo del mock; ahora manda la paleta. */
   --color-fab: var(--c-brand);
   --color-backdrop: var(--c-backdrop);
 
-  /* Tipografía: las vars las instancia next/font en <html>. */
   --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
   --font-body: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
 }
 
 html {
-  /* Fuente del documento: Manrope. Los títulos usan font-display
-   * (Bricolage Grotesque) componente a componente. */
   font-family: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
   scroll-behavior: smooth;
 }
 
+@utility link-cobalto {
+  color: var(--color-ink);
+  font-weight: 600;
+  text-decoration-line: underline;
+  text-decoration-color: var(--color-brand);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.3em;
+}
+
 :focus-visible {
-  outline: 2px solid var(--color-brand);
-  outline-offset: 2px;
+  outline: 2px solid var(--cobalto);
+  outline-offset: 3px;
+}
+
+/* El anillo va pegado al campo, con un halo suave. En alto contraste queda el outline nativo. */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--cobalto);
+  outline-offset: 0;
+  border-color: var(--cobalto);
+  box-shadow: 0 0 0 3px rgb(31 79 255 / 28%);
+}
+
+.field:has(:focus-visible) {
+  border-color: var(--cobalto);
+  outline: 2px solid var(--cobalto);
+  outline-offset: 0;
+  box-shadow: 0 0 0 3px rgb(31 79 255 / 28%);
+}
+
+.field input:focus-visible,
+.field textarea:focus-visible,
+.field-quiet:focus-visible {
+  outline: none;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+@media (forced-colors: active) {
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible,
+  .field:has(:focus-visible) {
+    outline: 2px solid CanvasText;
+    box-shadow: none;
+  }
+}
+
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 ::selection {
-  background: color-mix(in oklch, var(--color-accent) 25%, transparent);
+  background: color-mix(in srgb, var(--color-brand) 18%, transparent);
 }

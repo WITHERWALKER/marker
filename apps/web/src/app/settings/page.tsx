@@ -61,7 +61,7 @@ export default async function SettingsPage() {
         <CreateTokenForm />
 
         {tokens.length === 0 ? (
-          <p className="rounded-lg border border-dashed border-edge bg-surface p-6 text-center text-sm text-mute">
+          <p className="rounded-2xl border border-edge bg-elevated p-6 text-center text-sm text-mute">
             Aún no tienes tokens.
           </p>
         ) : (
@@ -69,7 +69,7 @@ export default async function SettingsPage() {
             {tokens.map((token) => (
               <li
                 key={token.id}
-                className="flex items-center justify-between gap-4 rounded-lg border border-edge bg-surface px-4 py-3"
+                className="flex items-center justify-between gap-4 rounded-2xl border border-edge bg-elevated px-4 py-3"
               >
                 <div className="min-w-0">
                   <p className="truncate text-sm font-medium text-ink">
@@ -90,7 +90,7 @@ export default async function SettingsPage() {
       </section>
 
       <section
-        className="rounded-xl border border-edge bg-surface p-5 text-sm text-body"
+        className="rounded-2xl border border-edge bg-elevated p-5 text-sm text-body"
         aria-labelledby="extension-help"
       >
         <h2 id="extension-help" className="font-semibold text-ink">

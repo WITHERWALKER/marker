@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { Download } from "lucide-react";
 
 /**
  * Botón de instalación de la PWA.
@@ -22,7 +23,7 @@ type NavigatorWithInstall = Navigator & {
   install?: () => Promise<void>;
 };
 
-export function InstallButton() {
+export function InstallButton({ iconOnly = false }: { iconOnly?: boolean }) {
   const [visible, setVisible] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -100,9 +101,14 @@ export function InstallButton() {
           onClick={handleClick}
           disabled={busy}
           aria-disabled={busy}
-          className="rounded-full border border-brand/30 px-3 py-1.5 text-sm font-medium text-brand transition hover:bg-brand/10 disabled:opacity-50"
+          aria-label="Instalar app"
+          title="Instalar app"
+          className={`inline-flex min-h-11 items-center gap-2 rounded-xl text-sm text-mute transition hover:bg-elevated hover:text-ink disabled:opacity-50 ${
+            iconOnly ? "w-11 justify-center" : "px-2.5"
+          }`}
         >
-          {busy ? "Instalando…" : "Instalar app"}
+          <Download aria-hidden strokeWidth={1.5} className="h-[18px] w-[18px] shrink-0" />
+          {!iconOnly && (busy ? "Instalando…" : "Instalar")}
         </button>
       )}
       {status && (

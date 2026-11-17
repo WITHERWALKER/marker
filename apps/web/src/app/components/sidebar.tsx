@@ -2,83 +2,163 @@
 
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
+import {
+  BookmarkPlus,
+  LogOut,
+  PanelLeftClose,
+  PanelLeftOpen,
+  Settings,
+} from "lucide-react";
 import { signOutAction } from "../actions";
 import { InstallButton } from "./install-button";
+import { MarkerLogo } from "./marker-logo";
+import { PlatformIcon } from "./platform-icon";
 import { PLATFORM_LABELS } from "./platform-meta";
 import { PLATFORMS } from "@/core/domain/item";
 
-/**
- * Rail lateral de escritorio (lg+), al estilo de la referencia: bloque de
- * usuario arriba, menú de texto plano (sin iconos ni pastillas) con el
- * filtro activo resaltado, y utilidades abajo. En móvil no se renderiza.
- */
+const iconProps = {
+  strokeWidth: 1.5,
+  className: "h-[18px] w-[18px] shrink-0",
+  "aria-hidden": true as const,
+};
 
-export function Sidebar({ email }: { email: string | null }) {
+/**
+ * Rail de escritorio. Abierto: icono + etiqueta. Cerrado: solo iconos.
+ * El ancho lo marca el grid del shell.
+ */
+export function Sidebar({
+  collapsed,
+  onToggle,
+}: {
+  collapsed: boolean;
+  onToggle: () => void;
+}) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const activePlatform = pathname === "/" ? (searchParams.get("platform") ?? "") : null;
-
-  const initials = email ? email.slice(0, 2).toUpperCase() : null;
+  const activePlatform =
+    pathname === "/" ? (searchParams.get("platform") ?? "") : null;
 
   const linkClass = (active: boolean) =>
-    `py-1.5 text-[15px] transition-colors ${
-      active ? "font-semibold text-ink" : "text-mute hover:text-ink"
-    }`;
+    `flex min-h-11 items-center gap-2.5 rounded-xl px-2.5 text-[15px] transition-colors ${
+      collapsed ? "justify-center" : ""
+    } ${active ? "bg-elevated font-semibold text-ink" : "text-mute hover:bg-elevated hover:text-ink"}`;
 
   return (
-    <aside className="hidden lg:sticky lg:top-5 lg:block lg:h-[calc(100dvh-2.5rem)] lg:overflow-y-auto">
-      <div className="flex h-full flex-col px-6 py-7">
-        {email && (
-          <div className="border-b border-edge pb-6">
-            <span
-              aria-hidden="true"
-              className="mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-brand text-sm font-semibold text-onbrand"
-            >
-              {initials}
+    <aside className="hidden border-edge bg-canvas lg:sticky lg:top-0 lg:flex lg:h-dvh lg:flex-col lg:overflow-y-auto lg:border-r lg:px-3 lg:py-5">
+      <div
+        className={`flex items-center gap-2 ${collapsed ? "flex-col" : "justify-between"}`}
+      >
+        <Link
+          href="/"
+          aria-label="Marker"
+          title="Marker"
+          className="flex min-h-11 items-center gap-2 text-ink"
+        >
+          <MarkerLogo className="h-6 w-6" />
+          {!collapsed && (
+            <span className="font-display text-lg font-bold tracking-tight">
+              Marker
             </span>
-            <p className="truncate text-sm font-semibold text-ink">{email}</p>
-            <p className="mt-0.5 text-xs text-mute">Marker</p>
-          </div>
-        )}
+          )}
+        </Link>
+      </div>
 
-        <nav aria-label="Filtrar por plataforma" className="mt-7 flex flex-col">
-          <Link href="/" className={linkClass(activePlatform === "")} aria-current={activePlatform === "" ? "page" : undefined}>
-            Todo
+      <div id="sidebar-nav" className="mt-6 flex min-h-0 flex-1 flex-col">
+        <nav
+          aria-label="Filtrar por plataforma"
+          className="flex flex-col gap-0.5"
+        >
+          <Link
+            href="/"
+            title="Todo"
+            aria-label="Todo"
+            className={linkClass(activePlatform === "")}
+            aria-current={activePlatform === "" ? "page" : undefined}
+          >
+            <PlatformIcon
+              platform="todo"
+              size={18}
+              className={activePlatform === "" ? "text-brand" : "text-ink"}
+            />
+            {!collapsed && "Todo"}
           </Link>
           {PLATFORMS.map((p) => (
             <Link
               key={p}
               href={`/?platform=${p}`}
+              title={PLATFORM_LABELS[p]}
+              aria-label={PLATFORM_LABELS[p]}
               className={linkClass(activePlatform === p)}
               aria-current={activePlatform === p ? "page" : undefined}
             >
-              {PLATFORM_LABELS[p]}
+              <PlatformIcon
+                platform={p}
+                size={18}
+                className={activePlatform === p ? "text-brand" : "text-ink"}
+              />
+              {!collapsed && PLATFORM_LABELS[p]}
             </Link>
           ))}
         </nav>
 
-        <div className="mt-auto flex flex-col border-t border-edge pt-5">
-          <nav aria-label="Secciones" className="flex flex-col text-sm">
-            <Link href="/add" className={linkClass(pathname === "/add")} aria-current={pathname === "/add" ? "page" : undefined}>
-              Guardar
+        <div className="mt-auto flex flex-col gap-0.5 pt-6">
+          <nav aria-label="Secciones" className="flex flex-col gap-0.5">
+            <Link
+              href="/add"
+              title="Guardar"
+              aria-label="Guardar"
+              className={linkClass(pathname === "/add")}
+              aria-current={pathname === "/add" ? "page" : undefined}
+            >
+              <BookmarkPlus {...iconProps} />
+              {!collapsed && "Guardar"}
             </Link>
-            <Link href="/import" className={linkClass(pathname === "/import")} aria-current={pathname === "/import" ? "page" : undefined}>
-              Importar
-            </Link>
-            <Link href="/settings" className={linkClass(pathname === "/settings")} aria-current={pathname === "/settings" ? "page" : undefined}>
-              Ajustes
+            <Link
+              href="/settings"
+              title="Ajustes"
+              aria-label="Ajustes"
+              className={linkClass(pathname === "/settings")}
+              aria-current={pathname === "/settings" ? "page" : undefined}
+            >
+              <Settings {...iconProps} />
+              {!collapsed && "Ajustes"}
             </Link>
           </nav>
 
-          <div className="mt-4">
-            <InstallButton />
-          </div>
+          <InstallButton iconOnly={collapsed} />
 
           <form action={signOutAction}>
-            <button type="submit" className="py-1.5 text-left text-sm text-mute transition-colors hover:text-ink">
-              Salir
+            <button
+              type="submit"
+              title="Salir"
+              aria-label="Salir"
+              className={`flex min-h-11 w-full items-center gap-2.5 rounded-xl px-2.5 text-left text-sm text-mute transition-colors hover:bg-elevated hover:text-ink ${
+                collapsed ? "justify-center" : ""
+              }`}
+            >
+              <LogOut {...iconProps} />
+              {!collapsed && "Salir"}
             </button>
           </form>
+
+          <button
+            type="button"
+            onClick={onToggle}
+            aria-expanded={!collapsed}
+            aria-controls="sidebar-nav"
+            aria-label={collapsed ? "Expandir menú" : "Contraer menú"}
+            title={collapsed ? "Expandir menú" : "Contraer menú"}
+            className={`flex min-h-11 w-full items-center gap-2.5 rounded-xl px-2.5 text-left text-sm text-mute transition-colors hover:bg-elevated hover:text-ink ${
+              collapsed ? "justify-center" : ""
+            }`}
+          >
+            {collapsed ? (
+              <PanelLeftOpen {...iconProps} />
+            ) : (
+              <PanelLeftClose {...iconProps} />
+            )}
+            {!collapsed && "Colapsar"}
+          </button>
         </div>
       </div>
     </aside>

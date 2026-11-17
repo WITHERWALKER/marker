@@ -9,6 +9,7 @@ const form = document.querySelector<HTMLFormElement>("#save-form");
 const setup = document.querySelector<HTMLDivElement>("#setup");
 const urlInput = document.querySelector<HTMLInputElement>("#url");
 const noteInput = document.querySelector<HTMLTextAreaElement>("#text");
+const tagsInput = document.querySelector<HTMLInputElement>("#tags");
 const saveButton = document.querySelector<HTMLButtonElement>("#save-btn");
 const goOptionsButton = document.querySelector<HTMLButtonElement>("#go-options");
 const openOptionsLink = document.querySelector<HTMLAnchorElement>("#open-options");
@@ -55,8 +56,12 @@ async function init(): Promise<void> {
     saveButton.disabled = true;
     if (status) status.hidden = true;
     const note = noteInput?.value.trim() ?? "";
+    const tags = (tagsInput?.value ?? "")
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter((tag) => tag.length > 0);
 
-    const result = await saveToMarker({ settings, url, text: note || null });
+    const result = await saveToMarker({ settings, url, text: note || null, tags });
 
     if (result.ok) {
       showStatus(
@@ -67,6 +72,7 @@ async function init(): Promise<void> {
       );
       noteInput?.replaceChildren();
       if (noteInput) noteInput.value = "";
+      if (tagsInput) tagsInput.value = "";
       // Cerramos tras dejar leer el resultado
       setTimeout(() => window.close(), 1600);
     } else if (result.status === 401) {

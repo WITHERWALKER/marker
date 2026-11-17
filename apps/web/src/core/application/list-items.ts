@@ -20,6 +20,7 @@ export function createListItemsUseCase(deps: Deps) {
         platform: options.platform,
         kind: options.kind,
         query: options.query,
+        tag: options.tag,
       });
     },
   };
