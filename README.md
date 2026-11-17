@@ -108,8 +108,9 @@ En la web → **Importar** → sube el archivo de export:
 - **Instagram (posts guardados)**: App → Configuración → Tu actividad →
   *Descargar tu información* → pide solo «Posts guardados» en JSON. Del ZIP
   que llega a tu correo, sube `saved_posts.json`.
-- **X (posts con «me gusta»)**: Configuración → Tu cuenta → *Descargar un
-  archivo de tus datos*. Del ZIP, sube `data/like.js`.
+- **X (me gusta y guardados)**: Configuración → Tu cuenta → *Descargar un
+  archivo de tus datos*. Del ZIP, sube `data/like.js` (me gusta) y/o
+  `data/bookmark.js` (guardados) — puedes seleccionar varios a la vez.
 
 Qué hace Marker con el archivo:
 

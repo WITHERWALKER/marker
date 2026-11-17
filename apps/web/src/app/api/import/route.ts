@@ -4,8 +4,8 @@ import { makeImportItems, makeImportParser } from "@/infrastructure/composition"
 import { createSupabaseServerClient } from "@/infrastructure/supabase/client.server";
 
 /**
- * Import de históricos (fase 3): recibe el archivo de export por multipart y
- * redirige a /import con las estadísticas.
+ * Import de históricos (fase 3): recibe uno o varios archivos de export por
+ * multipart y redirige a /import con las estadísticas.
  *
  * Es un route handler (no un server action) porque las actions limitan el
  * cuerpo a 1 MB y los exports de Instagram pueden pesar bastante más.
@@ -32,20 +32,26 @@ export async function POST(request: NextRequest) {
   if (!user) return redirectTo("/login");
 
   const formData = await request.formData().catch(() => null);
-  const file = formData?.get("file");
-  if (!(file instanceof File) || file.size === 0) {
+  const files = (formData?.getAll("file") ?? []).filter(
+    (candidate): candidate is File =>
+      candidate instanceof File && candidate.size > 0,
+  );
+  if (files.length === 0) {
     return redirectTo("/import", { error: "vacio" });
   }
-  if (file.size > MAX_FILE_BYTES) {
+  if (files.some((file) => file.size > MAX_FILE_BYTES)) {
     return redirectTo("/import", { error: "grande" });
   }
 
-  const raw = await file.text();
   const parser = makeImportParser();
 
-  let entries: ImportedEntry[];
+  // Autodetecta el formato de cada archivo y concatena las entradas: subir
+  // like.js + bookmark.js del archive de X en una sola importación funciona.
+  const entries: ImportedEntry[] = [];
   try {
-    entries = parser.parse(raw);
+    for (const file of files) {
+      entries.push(...parser.parse(await file.text()));
+    }
   } catch {
     return redirectTo("/import", { error: "formato" });
   }

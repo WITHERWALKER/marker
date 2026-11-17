@@ -15,7 +15,7 @@ const ERROR_MESSAGES: Record<string, string> = {
   vacio: "No se recibió ningún archivo válido.",
   grande: "El archivo supera el límite de 25 MB.",
   formato:
-    "Formato no reconocido: espera el saved_posts.json de Instagram o el like.js del archive de X.",
+    "Formato no reconocido: espera el saved_posts.json de Instagram o los like.js / bookmark.js del archive de X.",
   inesperado: "Algo falló al importar. Revisa la consola del servidor e inténtalo de nuevo.",
   enriquecimiento:
     "Algo falló durante el enriquecimiento. Revisa la consola del servidor e inténtalo de nuevo.",
@@ -129,13 +129,14 @@ export default async function ImportPage({ searchParams }: ImportPageProps) {
       >
         <div className="flex w-full flex-col gap-1">
           <label htmlFor="file" className="text-sm font-medium text-zinc-700">
-            Archivo de export
+            Archivos de export
           </label>
           <input
             id="file"
             name="file"
             type="file"
             accept=".json,.js,.txt"
+            multiple
             required
             className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm file:mr-3 file:rounded-full file:border-0 file:bg-zinc-100 file:px-3 file:py-1 file:text-xs file:font-medium hover:file:bg-zinc-200"
           />
@@ -169,20 +170,24 @@ export default async function ImportPage({ searchParams }: ImportPageProps) {
             </p>
           </div>
           <div>
-            <p className="font-medium text-zinc-800">X — posts con «me gusta»</p>
+            <p className="font-medium text-zinc-800">X — me gusta y guardados</p>
             <p className="mt-0.5">
               Configuración → Tu cuenta → <em>Descargar un archivo de tus datos</em>.
               Del ZIP, sube{" "}
               <code className="rounded bg-zinc-100 px-1.5 py-0.5 font-mono text-xs">
                 data/like.js
-              </code>
-              .
+              </code>{" "}
+              (me gusta) y{" "}
+              <code className="rounded bg-zinc-100 px-1.5 py-0.5 font-mono text-xs">
+                data/bookmark.js
+              </code>{" "}
+              (guardados) — puedes seleccionar varios archivos a la vez.
             </p>
           </div>
         </div>
         <p className="mt-3 border-t border-zinc-100 pt-3 text-xs text-zinc-400">
-          Puedes subir el mismo archivo dos veces: el dedupe por URL canónica
-          evita guardar nada repetido.
+          Puedes subir varios archivos a la vez, o el mismo dos veces: el dedupe
+          por URL canónica evita guardar nada repetido.
         </p>
       </section>
 
