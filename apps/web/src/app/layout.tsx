@@ -64,6 +64,12 @@ export default function RootLayout({
                 Guardar
               </Link>
               <Link
+                href="/import"
+                className="rounded-full px-3 py-1.5 text-zinc-600 transition hover:bg-zinc-100 hover:text-zinc-900"
+              >
+                Importar
+              </Link>
+              <Link
                 href="/settings"
                 className="rounded-full px-3 py-1.5 text-zinc-600 transition hover:bg-zinc-100 hover:text-zinc-900"
               >
@@ -84,7 +90,7 @@ export default function RootLayout({
           {children}
         </main>
         <footer className="border-t border-zinc-200 py-4 text-center text-xs text-zinc-400">
-          Marker · fase 1 — captura por share sheet de Android
+          Marker · guarda, importa y reencuentra lo que ves
         </footer>
         <ServiceWorkerRegistrar />
       </body>

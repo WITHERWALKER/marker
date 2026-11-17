@@ -3,9 +3,10 @@
 > Todo lo que guardas —Instagram, X, YouTube, la web— en un solo lugar,
 > buscable con palabras, no con memoria.
 
-**Fase actual: 2 (extensión de navegador)** — captura desde cualquier app del
-Android (share target), desde el PC con un clic (extensión Chrome/Edge), feed
-con filtros, búsqueda, dedupe automático y enriquecimiento de metadata.
+**Fase actual: 3 (import de histórico)** — captura desde cualquier app del
+Android (share target), desde el PC con un clic (extensión Chrome/Edge),
+feed con filtros, búsqueda, dedupe automático y enriquecimiento de metadata,
+más importación masiva de lo ya guardado en Instagram y X.
 
 ---
 
@@ -19,12 +20,13 @@ apps/
     src/
       core/                   → CORAZÓN: sin dependencias de framework
         domain/               → entidades y reglas (Item, URL, plataforma)
-        application/          → casos de uso (SaveItem, ListItems)
-      core/ports.ts           → contratos (ItemRepository, MetadataFetcher)
+        application/          → casos de uso (SaveItem, ListItems, ImportItems)
+      core/ports.ts           → contratos (ItemRepository, MetadataFetcher, ImportParser)
       infrastructure/         → implementaciones de los puertos
         supabase/             → repositorio + clientes Supabase
         metadata/             → fetcher OpenGraph/oEmbed
         auth/                 → tokens de API + JWT efímeros (extensión)
+        import/               → parsers de exports (Instagram saved_posts, X archive)
         composition.ts        → composition root (inyección de dependencias)
       app/                    → presentación (rutas, server actions, UI)
       middleware.ts           → sesión + protección de rutas
@@ -99,6 +101,33 @@ solo conocen puertos; cambiar Supabase por otra cosa no toca el negocio.
 > La operación corre como tu usuario con RLS activa (JWT efímero), sin
 > service-role key.
 
+## Cómo importar tu histórico
+
+En la web → **Importar** → sube el archivo de export:
+
+- **Instagram (posts guardados)**: App → Configuración → Tu actividad →
+  *Descargar tu información* → pide solo «Posts guardados» en JSON. Del ZIP
+  que llega a tu correo, sube `saved_posts.json`.
+- **X (posts con «me gusta»)**: Configuración → Tu cuenta → *Descargar un
+  archivo de tus datos*. Del ZIP, sube `data/like.js`.
+
+Qué hace Marker con el archivo:
+
+- **Autodetecta el formato** (parser por contenido, no por extensión) y
+  rechaza lo que no reconoce con un aviso claro.
+- **Preserva la fecha original** de cada guardado (`saved_at`), así el
+  histórico respeta el orden temporal real.
+- **Dedupe** por URL canónica, tanto dentro del lote como contra lo que ya
+  tengas guardado: puedes subir el mismo archivo dos veces sin duplicar.
+- **Sin enriquecimiento síncrono**: los items quedan en `status=pending`
+  (importar miles de URLs no debe bloquear una petición HTTP).
+
+El endpoint acepta multipart con un archivo de hasta 25 MB y redirige de
+vuelta a `/import` con las estadísticas (`imported`, `duplicates`, `invalid`).
+
+> Añadir un nuevo formato de export (Reddit, Pocket, YouTube…) = escribir un
+> `ImportParser` nuevo y registrarlo en `AutoImportParser`; nada más se toca.
+
 ## Fases
 
 | Fase | Qué entrega | Estado |
@@ -106,7 +135,7 @@ solo conocen puertos; cambiar Supabase por otra cosa no toca el negocio.
 | 0 | Captura por URL, feed, búsqueda, dedupe, metadata | ✅ |
 | 1 | PWA Android con share_target (compartir → Marker) | ✅ |
 | 2 | Extensión de navegador (Chrome/Edge) con token de API | ✅ |
-| 3 | Import histórico (saved_posts.json de Instagram, X) | ⬜ |
+| 3 | Import histórico (saved_posts.json de Instagram, X) | ✅ |
 | 4 | IA: auto-tags, búsqueda semántica, transcripciones | ⬜ |
 | 5 | Auto-syncs (YouTube OAuth, X, Reddit) | ⬜ |
 | 6 | Producto: multiusuario, billing, servidor MCP | ⬜ |
