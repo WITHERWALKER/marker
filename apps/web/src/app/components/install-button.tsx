@@ -59,7 +59,10 @@ export function InstallButton() {
     if (busy) return;
     setBusy(true);
     try {
-      if (supportsWebInstall.current && typeof (navigator as NavigatorWithInstall).install === "function") {
+      if (
+        supportsWebInstall.current &&
+        typeof (navigator as NavigatorWithInstall).install === "function"
+      ) {
         await (navigator as NavigatorWithInstall).install!();
         setStatus("App instalada ✓");
         setVisible(false);
