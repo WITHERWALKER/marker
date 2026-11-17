@@ -46,15 +46,18 @@ export default async function RootLayout({
 
   return (
     <html lang="es" className={`${bricolage.variable} ${manrope.variable}`}>
-      <body className="min-h-dvh bg-canvas text-body antialiased lg:grid lg:grid-cols-[280px_1fr]">
+      <body className="bg-backdrop text-body antialiased">
         {/* React 19 eleva este meta al <head>: el navegador conoce el esquema
          * antes del primer render, incluso antes de que llegue el CSS. */}
         <meta name="color-scheme" content="dark light" />
 
-        <Sidebar email={user?.email ?? null} />
+        {/* Marco estilo referencia: panel redondeado que flota sobre el
+         * fondo lavanda (lg+). En móvil queda a sangre completa. */}
+        <div className="min-h-dvh bg-canvas lg:grid lg:m-5 lg:min-h-[calc(100dvh-2.5rem)] lg:grid-cols-[280px_1fr] lg:overflow-clip lg:rounded-[28px] lg:shadow-2xl lg:shadow-black/25">
+          <Sidebar email={user?.email ?? null} />
 
-        <div className="flex min-h-dvh flex-col">
-          <header className="sticky top-0 z-10 border-b border-edge bg-surface/90 backdrop-blur lg:hidden">
+          <div className="flex flex-col lg:min-h-[calc(100dvh-2.5rem)]">
+            <header className="sticky top-0 z-10 border-b border-edge bg-surface/90 backdrop-blur lg:hidden">
             <div className="mx-auto flex h-14 w-full max-w-5xl items-center justify-between px-4">
               <Link
                 href="/"
@@ -113,6 +116,7 @@ export default async function RootLayout({
           <footer className="border-t border-edge py-4 text-center text-xs text-mute">
             Marker · guarda, importa y reencuentra lo que ves
           </footer>
+          </div>
         </div>
 
         <ServiceWorkerRegistrar />

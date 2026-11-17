@@ -68,15 +68,15 @@ export default async function FeedPage({ searchParams }: FeedPageProps) {
     <div className="flex flex-col gap-6">
       <section className="flex flex-col gap-4" aria-label="Filtros y búsqueda">
         {/* Escritorio: título + tabs por tipo + búsqueda + botón de guardar */}
-        <div className="hidden lg:flex lg:flex-col lg:gap-4">
+        <div className="hidden lg:flex lg:flex-col lg:gap-5">
           <div className="flex items-center justify-between gap-4">
-            <h1 className="font-display text-3xl font-bold tracking-tight text-ink">
+            <h1 className="font-display text-[28px] font-bold tracking-tight text-ink">
               {title}
             </h1>
             <Link
               href="/add"
               aria-label="Guardar contenido"
-              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-fab text-white shadow-md transition hover:opacity-90"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-fab text-white shadow-md transition hover:opacity-90"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -85,7 +85,7 @@ export default async function FeedPage({ searchParams }: FeedPageProps) {
                 strokeWidth="2.2"
                 strokeLinecap="round"
                 aria-hidden="true"
-                className="h-5 w-5"
+                className="h-4 w-4"
               >
                 <path d="M12 5v14" />
                 <path d="M5 12h14" />
@@ -93,23 +93,23 @@ export default async function FeedPage({ searchParams }: FeedPageProps) {
             </Link>
           </div>
           <div className="flex items-center justify-between gap-4">
-            <nav aria-label="Filtrar por tipo" className="flex items-center gap-1 rounded-xl bg-elevated p-1">
+            <nav aria-label="Filtrar por tipo" className="flex items-center gap-6 text-sm">
               {KIND_TABS.map((tab) => (
                 <Link
                   key={tab.label}
                   href={hrefFor({ kind: tab.value })}
                   aria-current={kind === tab.value || (!kind && !tab.value) ? "page" : undefined}
-                  className={`rounded-lg px-3 py-1.5 text-sm transition ${
+                  className={`border-b-2 pb-1.5 transition-colors ${
                     kind === tab.value || (!kind && !tab.value)
-                      ? "bg-surface font-medium text-ink shadow-sm"
-                      : "text-mute hover:text-ink"
+                      ? "border-ink font-semibold text-ink"
+                      : "border-transparent text-mute hover:text-ink"
                   }`}
                 >
                   {tab.label}
                 </Link>
               ))}
             </nav>
-            <SearchForm platform={platform} kind={params.kind} defaultValue={query ?? ""} maxWidth="w-full max-w-sm" />
+            <SearchForm compact platform={platform} kind={params.kind} defaultValue={query ?? ""} />
           </div>
         </div>
 
@@ -163,7 +163,7 @@ export default async function FeedPage({ searchParams }: FeedPageProps) {
       ) : (
         <section
           aria-label="Contenido guardado"
-          className="columns-1 gap-4 sm:columns-2 xl:columns-3 2xl:columns-4"
+          className="columns-1 gap-5 sm:columns-2 xl:columns-3 2xl:columns-4"
         >
           {items.map((item) => (
             <ItemCard key={item.id} item={item} />

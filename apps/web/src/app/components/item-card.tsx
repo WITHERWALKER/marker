@@ -1,6 +1,6 @@
 import { displayUrl } from "@/core/domain/url";
 import type { Item, ItemKind, Platform } from "@/core/domain/item";
-import { PlatformBadge } from "./platform-badge";
+import { PLATFORM_DOTS, PLATFORM_LABELS } from "./platform-meta";
 
 const dateFmt = new Intl.DateTimeFormat("es-ES", {
   day: "numeric",
@@ -32,82 +32,87 @@ const PLACEHOLDER_GRADIENTS: Record<Platform, string> = {
   web: "from-emerald-400 to-teal-700",
 };
 
-const PLACEHOLDER_ICONS: Record<Platform, string> = {
-  instagram: "📸",
-  twitter: "🐦",
-  youtube: "▶️",
-  reddit: "👽",
-  facebook: "👍",
-  pinterest: "📌",
-  tiktok: "🎵",
-  web: "🌐",
-};
-
+/**
+ * Card estilo referencia: la media llena toda la tarjeta y el contenido se
+ * superpone encima (texto blanco con velo de legibilidad). Sin bordes,
+ * esquinas grandes. El título es el único enlace y estira toda la tarjeta
+ * (stretched-link).
+ */
 export function ItemCard({ item }: { item: Item }) {
-  return (
-    <article className="group relative mb-4 break-inside-avoid overflow-hidden rounded-xl border border-edge bg-surface transition hover:border-mute hover:shadow-md has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-accent">
-      {/* Un solo enlace que estira toda la tarjeta (patrón stretched-link):
-       * accessible name = título; nada más es interactivo dentro. */}
-      <div className={`overflow-hidden bg-elevated ${MEDIA_ASPECT[item.kind] ?? "aspect-[4/3]"}`}>
-        {item.thumbnailUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={item.thumbnailUrl}
-            alt=""
-            loading="lazy"
-            decoding="async"
-            referrerPolicy="no-referrer"
-            className="h-full w-full object-cover transition duration-200 group-hover:scale-[1.02]"
-          />
-        ) : (
-          <span
-            aria-hidden="true"
-            className={`flex h-full items-center justify-center bg-gradient-to-br text-4xl opacity-90 ${PLACEHOLDER_GRADIENTS[item.platform]}`}
-          >
-            <span className="drop-shadow-sm">{PLACEHOLDER_ICONS[item.platform]}</span>
-          </span>
-        )}
-      </div>
+  const hasThumb = Boolean(item.thumbnailUrl);
+  const statusNote =
+    item.status === "pending"
+      ? "Procesando metadata…"
+      : item.status === "error"
+        ? "Sin metadata (se reintentará)"
+        : null;
 
-      <div className="flex flex-col gap-2 p-4">
-        <div className="flex items-center gap-2">
-          <PlatformBadge platform={item.platform} />
-          {item.source !== "paste" && (
-            <span className="rounded-full bg-elevated px-2 py-0.5 text-[11px] text-mute">
-              {item.source}
-            </span>
+  return (
+    <article
+      className={`group relative mb-5 break-inside-avoid overflow-hidden rounded-3xl bg-elevated transition hover:shadow-lg hover:brightness-[1.03] has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-accent ${MEDIA_ASPECT[item.kind] ?? "aspect-[4/3]"}`}
+    >
+      {item.thumbnailUrl ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={item.thumbnailUrl}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          referrerPolicy="no-referrer"
+          className="absolute inset-0 h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
+        />
+      ) : (
+        <span
+          aria-hidden="true"
+          className={`absolute inset-0 bg-gradient-to-br ${PLACEHOLDER_GRADIENTS[item.platform]}`}
+        />
+      )}
+
+      {/* Velo para que el texto blanco se lea sobre cualquier foto */}
+      {hasThumb && (
+        <span
+          aria-hidden="true"
+          className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/15 to-black/55"
+        />
+      )}
+
+      {/* Play al centro en vídeos y reels, como en la referencia */}
+      {(item.kind === "video" || item.kind === "reel") && (
+        <span
+          aria-hidden="true"
+          className="absolute left-1/2 top-1/2 grid h-11 w-11 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white/25 text-white backdrop-blur-sm transition group-hover:bg-white/35"
+        >
+          <svg viewBox="0 0 24 24" fill="currentColor" className="ml-0.5 h-4 w-4">
+            <path d="M8 5.5v13l11-6.5-11-6.5Z" />
+          </svg>
+        </span>
+      )}
+
+      <div className="relative flex h-full flex-col justify-between gap-3 p-5">
+        <div>
+          <h2 className="wrap-anywhere font-display text-lg font-semibold leading-snug text-white drop-shadow-sm">
+            <a
+              href={item.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="after:absolute after:inset-0"
+            >
+              {item.title ?? displayUrl(item.url)}
+            </a>
+          </h2>
+          {(item.description || statusNote) && (
+            <p className="mt-2 line-clamp-2 text-sm text-white/80" title={item.errorMessage ?? undefined}>
+              {item.description ?? statusNote}
+            </p>
           )}
         </div>
 
-        <h2 className="wrap-anywhere text-sm font-semibold leading-snug text-ink">
-          <a
-            href={item.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="after:absolute after:inset-0 hover:underline"
-          >
-            {item.title ?? displayUrl(item.url)}
-          </a>
-        </h2>
-
-        {item.description && (
-          <p className="line-clamp-2 text-sm text-body">{item.description}</p>
-        )}
-
-        {item.status === "pending" && (
-          <p className="text-xs text-amber-600 dark:text-amber-400">⏳ Procesando metadata…</p>
-        )}
-        {item.status === "error" && (
-          <p className="text-xs text-mute" title={item.errorMessage ?? undefined}>
-            Sin metadata (se reintentará)
-          </p>
-        )}
-
-        <div className="mt-auto flex items-center justify-between gap-2 pt-1 text-xs text-mute">
-          <span className="truncate">{displayUrl(item.url)}</span>
-          <time dateTime={item.savedAt} className="shrink-0">
-            {dateFmt.format(new Date(item.savedAt))}
-          </time>
+        <div className="flex items-center justify-between gap-3 text-[11px] font-medium text-white/75">
+          <span className="flex items-center gap-1.5">
+            <span aria-hidden="true" className={`h-1.5 w-1.5 rounded-full ${PLATFORM_DOTS[item.platform]}`} />
+            {PLATFORM_LABELS[item.platform]}
+          </span>
+          <time dateTime={item.savedAt}>{dateFmt.format(new Date(item.savedAt))}</time>
         </div>
       </div>
     </article>

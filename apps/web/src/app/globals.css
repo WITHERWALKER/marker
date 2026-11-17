@@ -41,6 +41,8 @@
   --onaccent-dark: var(--color-white);
   --fab-light: var(--color-red-600);
   --fab-dark: var(--color-red-500);
+  --backdrop-light: oklch(0.84 0.06 286); /* lavanda del mock de referencia */
+  --backdrop-dark: oklch(0.07 0 0);
   --scroll-thumb-light: var(--color-zinc-400);
   --scroll-thumb-dark: var(--color-zinc-600);
 
@@ -57,6 +59,7 @@
   --c-accent: var(--accent-light);
   --c-onaccent: var(--onaccent-light);
   --c-fab: var(--fab-light);
+  --c-backdrop: var(--backdrop-light);
   --c-scroll-thumb: var(--scroll-thumb-light);
 
   @media (prefers-color-scheme: dark) {
@@ -72,6 +75,7 @@
     --c-accent: var(--accent-dark);
     --c-onaccent: var(--onaccent-dark);
     --c-fab: var(--fab-dark);
+    --c-backdrop: var(--backdrop-dark);
     --c-scroll-thumb: var(--scroll-thumb-dark);
   }
 
@@ -88,6 +92,7 @@
     --c-accent: light-dark(var(--accent-light), var(--accent-dark));
     --c-onaccent: light-dark(var(--onaccent-light), var(--onaccent-dark));
     --c-fab: light-dark(var(--fab-light), var(--fab-dark));
+    --c-backdrop: light-dark(var(--backdrop-light), var(--backdrop-dark));
     --c-scroll-thumb: light-dark(var(--scroll-thumb-light), var(--scroll-thumb-dark));
   }
 
@@ -111,6 +116,7 @@
   --color-accent: var(--c-accent);
   --color-onaccent: var(--c-onaccent);
   --color-fab: var(--c-fab);
+  --color-backdrop: var(--c-backdrop);
 
   /* Tipografía: las vars las instancia next/font en <html>. */
   --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
