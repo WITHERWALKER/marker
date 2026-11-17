@@ -1,3 +1,5 @@
+import { createEnrichPendingItemsUseCase } from "@/core/application/enrich-pending-items";
+import { createEnrichmentQueueQuery } from "@/core/application/enrichment-queue";
 import { createImportItemsUseCase } from "@/core/application/import-items";
 import { createListItemsUseCase } from "@/core/application/list-items";
 import { createSaveItemUseCase } from "@/core/application/save-item";
@@ -44,6 +46,23 @@ export async function makeListItems() {
 export async function makeImportItems() {
   const supabase = await createSupabaseServerClient();
   return createImportItemsUseCase({
+    items: new SupabaseItemRepository(supabase),
+  });
+}
+
+/** Re-enriquecimiento en lote de los items pendientes (post-import). */
+export async function makeEnrichPendingItems() {
+  const supabase = await createSupabaseServerClient();
+  return createEnrichPendingItemsUseCase({
+    items: new SupabaseItemRepository(supabase),
+    metadata: new HttpMetadataFetcher(),
+  });
+}
+
+/** Consulta de la cola de enriquecimiento (cuántos quedan pendientes). */
+export async function makeEnrichmentQueue() {
+  const supabase = await createSupabaseServerClient();
+  return createEnrichmentQueueQuery({
     items: new SupabaseItemRepository(supabase),
   });
 }

@@ -1,10 +1,14 @@
 import Link from "next/link";
+import { makeEnrichmentQueue } from "@/infrastructure/composition";
 import { createSupabaseServerClient } from "@/infrastructure/supabase/client.server";
 
 /**
  * Import de histórico: subes el export de Instagram (saved_posts.json) o el
  * archive de X (like.js) y Marker lo convierte en items, preservando la
  * fecha original y deduplicando por URL canónica.
+ *
+ * También es la puerta del re-enriquecimiento: los items importados llegan
+ * sin metadata y desde aquí se procesan en lotes.
  */
 
 const ERROR_MESSAGES: Record<string, string> = {
@@ -13,6 +17,8 @@ const ERROR_MESSAGES: Record<string, string> = {
   formato:
     "Formato no reconocido: espera el saved_posts.json de Instagram o el like.js del archive de X.",
   inesperado: "Algo falló al importar. Revisa la consola del servidor e inténtalo de nuevo.",
+  enriquecimiento:
+    "Algo falló durante el enriquecimiento. Revisa la consola del servidor e inténtalo de nuevo.",
 };
 
 interface ImportPageProps {
@@ -20,6 +26,10 @@ interface ImportPageProps {
     imported?: string;
     duplicates?: string;
     invalid?: string;
+    processed?: string;
+    enriched?: string;
+    failed?: string;
+    remaining?: string;
     error?: string;
   }>;
 }
@@ -34,7 +44,11 @@ export default async function ImportPage({ searchParams }: ImportPageProps) {
   if (!user) return null; // el middleware ya envió a /login
 
   const error = params.error ? ERROR_MESSAGES[params.error] ?? params.error : null;
-  const hasStats = params.imported !== undefined;
+  const hasImportStats = params.imported !== undefined;
+  const hasEnrichStats = params.processed !== undefined;
+
+  const queue = await makeEnrichmentQueue();
+  const { pending } = await queue.execute(user.id);
 
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-6">
@@ -55,7 +69,7 @@ export default async function ImportPage({ searchParams }: ImportPageProps) {
         </p>
       )}
 
-      {hasStats && (
+      {hasImportStats && (
         <div
           role="status"
           className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"
@@ -66,6 +80,45 @@ export default async function ImportPage({ searchParams }: ImportPageProps) {
             {params.invalid ?? 0} inválidos
           </p>
         </div>
+      )}
+
+      {hasEnrichStats && (
+        <div
+          role="status"
+          className="rounded-lg border border-sky-200 bg-sky-50 px-4 py-3 text-sm text-sky-800"
+        >
+          <p className="font-medium">Enriquecimiento procesado ✓</p>
+          <p className="mt-1 text-sky-700">
+            {params.processed} procesados · {params.enriched ?? 0} con metadata ·{" "}
+            {params.failed ?? 0} fallidos · quedan {params.remaining ?? 0} pendientes
+          </p>
+        </div>
+      )}
+
+      {pending > 0 && (
+        <section
+          aria-labelledby="enrich-heading"
+          className="rounded-xl border border-amber-200 bg-amber-50 p-5 text-sm text-amber-900"
+        >
+          <h2 id="enrich-heading" className="font-semibold">
+            Pendientes de enriquecer: {pending}
+          </h2>
+          <p className="mt-1 text-amber-800">
+            Los items importados llegan sin metadata. Procesa en lotes de 15
+            para obtener título, autor y miniatura de la fuente. Ojo:
+            plataformas como Instagram y X bloquean el acceso anónimo, así que
+            esos quedarán sin título útil hasta que Marker tenga sync directo
+            con cada plataforma.
+          </p>
+          <form action="/api/enrich-pending" method="post" className="mt-3">
+            <button
+              type="submit"
+              className="rounded-full bg-amber-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-amber-500"
+            >
+              Enriquecer ahora
+            </button>
+          </form>
+        </section>
       )}
 
       <form

@@ -41,6 +41,10 @@ export interface ItemRepository {
   create(userId: string, item: NewItem): Promise<Item>;
   update(userId: string, itemId: string, patch: ItemPatch): Promise<Item | null>;
   list(userId: string, options: ListItemsOptions): Promise<Item[]>;
+  /** Items en un estado dado, del más viejo al más nuevo (cola FIFO) */
+  listByStatus(userId: string, status: Item["status"], limit: number): Promise<Item[]>;
+  /** Cuántos items hay en un estado dado (para pintar la cola en la UI) */
+  countByStatus(userId: string, status: Item["status"]): Promise<number>;
   /** Devuelve los canonical_url de la lista que YA existen para el usuario */
   findByCanonicalUrls(userId: string, canonicalUrls: string[]): Promise<string[]>;
   /** Inserta en bloque; devuelve cuántas filas entró */

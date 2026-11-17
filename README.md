@@ -121,6 +121,12 @@ Qué hace Marker con el archivo:
   tengas guardado: puedes subir el mismo archivo dos veces sin duplicar.
 - **Sin enriquecimiento síncrono**: los items quedan en `status=pending`
   (importar miles de URLs no debe bloquear una petición HTTP).
+- **Re-enriquecimiento en lote**: desde la misma página de Importar,
+  «Enriquecer ahora» procesa los pendientes en lotes de 15 (título, autor,
+  miniatura vía OpenGraph/oEmbed). Las fuentes que bloquean el acceso
+  anónimo (Instagram, X) quedan sin título útil hasta que exista sync
+  directo; el fetcher además descarta títulos que solo repiten el nombre
+  del sitio (login-walls).
 
 El endpoint acepta multipart con un archivo de hasta 25 MB y redirige de
 vuelta a `/import` con las estadísticas (`imported`, `duplicates`, `invalid`).

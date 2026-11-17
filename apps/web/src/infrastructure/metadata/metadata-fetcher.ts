@@ -34,7 +34,7 @@ export class HttpMetadataFetcher implements MetadataFetcher {
       const oembed = await this.fetchOEmbed(
         `https://www.youtube.com/oembed?url=${encodeURIComponent(url)}&format=json`,
       );
-      if (oembed) return this.normalize(oembed, null);
+      if (oembed) return this.normalize(oembed, null, parsed);
     }
 
     const response = await fetch(url, {
@@ -56,10 +56,10 @@ export class HttpMetadataFetcher implements MetadataFetcher {
     const oembedHref = meta.get("alternate-json-oembed");
     if (oembedHref) {
       const oembed = await this.fetchOEmbed(new URL(oembedHref, url).toString());
-      if (oembed) return this.normalize(oembed, meta);
+      if (oembed) return this.normalize(oembed, meta, parsed);
     }
 
-    return this.normalize(null, meta);
+    return this.normalize(null, meta, parsed);
   }
 
   private async fetchOEmbed(endpoint: string): Promise<OEmbedResponse | null> {
@@ -78,6 +78,7 @@ export class HttpMetadataFetcher implements MetadataFetcher {
   private normalize(
     oembed: OEmbedResponse | null,
     meta: Map<string, string> | null,
+    url: URL,
   ) {
     const pick = (...keys: string[]): string | null => {
       for (const key of keys) {
@@ -101,8 +102,28 @@ export class HttpMetadataFetcher implements MetadataFetcher {
       null;
 
     if (!title && !description && !thumbnailUrl) return null;
+
+    // Login-walls (Instagram, X...) sirven una página cuyo único "dato" es
+    // el nombre del propio sitio. Un título que solo repite la marca, sin
+    // descripción ni miniatura, no dice nada del contenido: no es metadata.
+    if (
+      title &&
+      !description &&
+      !thumbnailUrl &&
+      title.trim().toLowerCase() === brandOf(url)
+    ) {
+      return null;
+    }
+
     return { title, description, authorName, thumbnailUrl };
   }
+}
+
+/** Marca esperable de un sitio a partir de su host: instagram.com → "instagram" */
+function brandOf(url: URL): string {
+  const host = url.hostname.toLowerCase().replace(/^www\./, "");
+  const [brand = host] = host.split(".").slice(-2);
+  return brand;
 }
 
 // ---------------------------------------------------------------------------

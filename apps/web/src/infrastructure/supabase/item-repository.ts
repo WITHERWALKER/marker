@@ -158,6 +158,29 @@ export class SupabaseItemRepository implements ItemRepository {
     return (data ?? []).map(toDomain);
   }
 
+  async listByStatus(userId: string, status: ItemStatus, limit: number): Promise<Item[]> {
+    const { data, error } = await this.client
+      .from("items")
+      .select("*")
+      .eq("user_id", userId)
+      .eq("status", status)
+      .order("saved_at", { ascending: true })
+      .limit(limit)
+      .returns<ItemRow[]>();
+    if (error) throw new Error(`listByStatus: ${error.message}`);
+    return (data ?? []).map(toDomain);
+  }
+
+  async countByStatus(userId: string, status: ItemStatus): Promise<number> {
+    const { count, error } = await this.client
+      .from("items")
+      .select("*", { count: "exact", head: true })
+      .eq("user_id", userId)
+      .eq("status", status);
+    if (error) throw new Error(`countByStatus: ${error.message}`);
+    return count ?? 0;
+  }
+
   async findByCanonicalUrls(userId: string, canonicalUrls: string[]): Promise<string[]> {
     if (canonicalUrls.length === 0) return [];
     const found: string[] = [];
