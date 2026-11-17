@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useLayoutEffect, useState } from "react";
+import { Suspense, useCallback, useLayoutEffect, useState } from "react";
 import { BookmarkPlus, Layers, LogOut, Settings } from "lucide-react";
 import { signOutAction } from "../actions";
 import { InstallButton } from "./install-button";
@@ -74,7 +74,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         collapsed ? "lg:grid-cols-[72px_1fr]" : "lg:grid-cols-[240px_1fr]"
       }`}
     >
-      <Sidebar collapsed={collapsed} onToggle={toggle} />
+      <Suspense fallback={<div className="h-dvh lg:hidden" />}>
+        <Sidebar collapsed={collapsed} onToggle={toggle} />
+      </Suspense>
 
       <div className="flex min-h-dvh min-w-0 flex-col">
         <header className="sticky top-0 z-10 bg-canvas/90 backdrop-blur lg:hidden">
