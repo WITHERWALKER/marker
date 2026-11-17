@@ -1,0 +1,12 @@
+name = "marker"
+compatibility_date = "2026-11-17"
+compatibility_flags = ["nodejs_compat"]
+
+# Cloudflare Pages build desde el monorepo con pnpm
+[build]
+command = "pnpm install && pnpm --filter @marker/web build"
+cwd = "."
+publish-dir = "apps/web/.next"
+
+[observability]
+enabled = true

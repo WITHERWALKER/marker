@@ -3,6 +3,11 @@ packages:
   - "packages/*"
 
 # Scripts de build aprobados (pnpm v10+ los bloquea por defecto)
+allowBuilds:
+  esbuild: set this to true or false
+  sharp: set this to true or false
+  workerd: set this to true or false
+
 onlyBuiltDependencies:
   - supabase
   - "@tailwindcss/oxide"
