@@ -31,3 +31,11 @@ export function supabaseAnonKey(): string {
   }
   return RAW_ANON_KEY;
 }
+
+const RAW_JWT_SECRET = process.env.SUPABASE_JWT_SECRET;
+
+/** Secreto para firmar JWT efímeros (rol authenticated) de la API de tokens. */
+export function supabaseJwtSecret(): string {
+  if (!RAW_JWT_SECRET) throw new MissingSupabaseEnvError("SUPABASE_JWT_SECRET");
+  return RAW_JWT_SECRET;
+}

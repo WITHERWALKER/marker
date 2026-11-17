@@ -63,6 +63,12 @@ export default function RootLayout({
               >
                 Guardar
               </Link>
+              <Link
+                href="/settings"
+                className="rounded-full px-3 py-1.5 text-zinc-600 transition hover:bg-zinc-100 hover:text-zinc-900"
+              >
+                Ajustes
+              </Link>
               <form action={signOutAction}>
                 <button
                   type="submit"
