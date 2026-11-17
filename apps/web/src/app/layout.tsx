@@ -1,15 +1,22 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import "./globals.css";
 import { signOutAction } from "./actions";
+import { InstallButton } from "./components/install-button";
+import { ServiceWorkerRegistrar } from "./components/service-worker";
 
 export const metadata: Metadata = {
+  manifest: "/manifest.webmanifest",
   title: {
     default: "Marker — todo lo que guardas, en un solo lugar",
     template: "%s · Marker",
   },
   description:
     "Unifica lo que guardas en Instagram, X, YouTube y la web. Búscalo con palabras, no con memoria.",
+};
+
+export const viewport: Viewport = {
+  themeColor: "#4f46e5",
 };
 
 function BookmarkIcon() {
@@ -43,6 +50,7 @@ export default function RootLayout({
               Marker
             </Link>
             <nav className="flex items-center gap-2 text-sm">
+              <InstallButton />
               <Link
                 href="/"
                 className="rounded-full px-3 py-1.5 text-zinc-600 transition hover:bg-zinc-100 hover:text-zinc-900"
@@ -70,8 +78,9 @@ export default function RootLayout({
           {children}
         </main>
         <footer className="border-t border-zinc-200 py-4 text-center text-xs text-zinc-400">
-          Marker · fase 0 — captura, feed y búsqueda
+          Marker · fase 1 — captura por share sheet de Android
         </footer>
+        <ServiceWorkerRegistrar />
       </body>
     </html>
   );
