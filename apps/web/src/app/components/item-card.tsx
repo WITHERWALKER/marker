@@ -21,12 +21,12 @@ const PLACEHOLDER_ICONS: Record<string, string> = {
 
 export function ItemCard({ item }: { item: Item }) {
   return (
-    <article className="group flex flex-col overflow-hidden rounded-xl border border-zinc-200 bg-white transition hover:border-zinc-300 hover:shadow-sm">
+    <article className="group flex flex-col overflow-hidden rounded-xl border border-edge bg-surface transition hover:border-mute hover:shadow-sm">
       <a
         href={item.url}
         target="_blank"
         rel="noopener noreferrer"
-        className="block aspect-[16/9] overflow-hidden bg-zinc-100"
+        className="block aspect-[16/9] overflow-hidden bg-elevated"
         aria-label={item.title ?? item.url}
       >
         {item.thumbnailUrl ? (
@@ -53,13 +53,13 @@ export function ItemCard({ item }: { item: Item }) {
         <div className="flex items-center gap-2">
           <PlatformBadge platform={item.platform} />
           {item.source !== "paste" && (
-            <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-[11px] text-zinc-500">
+            <span className="rounded-full bg-elevated px-2 py-0.5 text-[11px] text-mute">
               {item.source}
             </span>
           )}
         </div>
 
-        <h2 className="text-sm font-semibold leading-snug text-zinc-900">
+        <h2 className="text-sm font-semibold leading-snug text-ink">
           <a
             href={item.url}
             target="_blank"
@@ -71,19 +71,19 @@ export function ItemCard({ item }: { item: Item }) {
         </h2>
 
         {item.description && (
-          <p className="line-clamp-2 text-sm text-zinc-600">{item.description}</p>
+          <p className="line-clamp-2 text-sm text-body">{item.description}</p>
         )}
 
         {item.status === "pending" && (
-          <p className="text-xs text-amber-600">⏳ Procesando metadata…</p>
+          <p className="text-xs text-amber-600 dark:text-amber-400">⏳ Procesando metadata…</p>
         )}
         {item.status === "error" && (
-          <p className="text-xs text-zinc-400" title={item.errorMessage ?? undefined}>
+          <p className="text-xs text-mute" title={item.errorMessage ?? undefined}>
             Sin metadata (se reintentará)
           </p>
         )}
 
-        <div className="mt-auto flex items-center justify-between gap-2 pt-1 text-xs text-zinc-500">
+        <div className="mt-auto flex items-center justify-between gap-2 pt-1 text-xs text-mute">
           <span className="truncate">{displayUrl(item.url)}</span>
           <time dateTime={item.savedAt} className="shrink-0">
             {dateFmt.format(new Date(item.savedAt))}

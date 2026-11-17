@@ -16,7 +16,7 @@ export default async function AddPage({ searchParams }: AddPageProps) {
     <div className="mx-auto flex max-w-xl flex-col gap-6">
       <header>
         <h1 className="text-xl font-semibold tracking-tight">Guardar contenido</h1>
-        <p className="mt-1 text-sm text-zinc-500">
+        <p className="mt-1 text-sm text-mute">
           Pega la URL de un post, reel, video o artículo. Marker detecta la
           plataforma, saca título, miniatura y autor, y lo añade a tu feed.
         </p>

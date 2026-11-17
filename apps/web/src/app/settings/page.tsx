@@ -37,7 +37,7 @@ export default async function SettingsPage() {
     <div className="mx-auto flex max-w-2xl flex-col gap-8">
       <header>
         <h1 className="text-xl font-semibold tracking-tight">Ajustes</h1>
-        <p className="mt-1 text-sm text-zinc-500">
+        <p className="mt-1 text-sm text-mute">
           Configura cómo se conectan otras apps (como la extensión de
           navegador) a tu Marker.
         </p>
@@ -48,7 +48,7 @@ export default async function SettingsPage() {
           <h2 id="tokens-heading" className="text-base font-semibold">
             Tokens de API
           </h2>
-          <p className="mt-1 text-sm text-zinc-500">
+          <p className="mt-1 text-sm text-mute">
             Un token permite guardar contenido en tu Marker sin sesión web (la
             extensión lo usa con{" "}
             <code className="font-mono text-xs">
@@ -61,7 +61,7 @@ export default async function SettingsPage() {
         <CreateTokenForm />
 
         {tokens.length === 0 ? (
-          <p className="rounded-lg border border-dashed border-zinc-300 bg-white p-6 text-center text-sm text-zinc-500">
+          <p className="rounded-lg border border-dashed border-edge bg-surface p-6 text-center text-sm text-mute">
             Aún no tienes tokens.
           </p>
         ) : (
@@ -69,13 +69,13 @@ export default async function SettingsPage() {
             {tokens.map((token) => (
               <li
                 key={token.id}
-                className="flex items-center justify-between gap-4 rounded-lg border border-zinc-200 bg-white px-4 py-3"
+                className="flex items-center justify-between gap-4 rounded-lg border border-edge bg-surface px-4 py-3"
               >
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-medium text-zinc-900">
+                  <p className="truncate text-sm font-medium text-ink">
                     {token.name}
                   </p>
-                  <p className="mt-0.5 text-xs text-zinc-500">
+                  <p className="mt-0.5 text-xs text-mute">
                     Creado el {dateFmt.format(new Date(token.created_at))} ·{" "}
                     {token.last_used_at
                       ? `último uso ${dateFmt.format(new Date(token.last_used_at))}`
@@ -90,10 +90,10 @@ export default async function SettingsPage() {
       </section>
 
       <section
-        className="rounded-xl border border-zinc-200 bg-white p-5 text-sm text-zinc-600"
+        className="rounded-xl border border-edge bg-surface p-5 text-sm text-body"
         aria-labelledby="extension-help"
       >
-        <h2 id="extension-help" className="font-semibold text-zinc-900">
+        <h2 id="extension-help" className="font-semibold text-ink">
           Cómo configurar la extensión
         </h2>
         <ol className="mt-2 list-inside list-decimal space-y-1">

@@ -25,7 +25,7 @@ function BookmarkIcon() {
       viewBox="0 0 24 24"
       fill="currentColor"
       aria-hidden="true"
-      className="h-5 w-5 text-indigo-600"
+      className="h-5 w-5 text-accent"
     >
       <path d="M6 3a2 2 0 0 0-2 2v16l8-5 8 5V5a2 2 0 0 0-2-2H6Z" />
     </svg>
@@ -39,8 +39,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es">
-      <body className="flex min-h-dvh flex-col bg-zinc-50 text-zinc-900 antialiased">
-        <header className="sticky top-0 z-10 border-b border-zinc-200 bg-white/90 backdrop-blur">
+      <body className="flex min-h-dvh flex-col bg-canvas text-body antialiased">
+        <header className="sticky top-0 z-10 border-b border-edge bg-surface/90 backdrop-blur">
           <div className="mx-auto flex h-14 w-full max-w-5xl items-center justify-between px-4">
             <Link
               href="/"
@@ -53,32 +53,32 @@ export default function RootLayout({
               <InstallButton />
               <Link
                 href="/"
-                className="rounded-full px-3 py-1.5 text-zinc-600 transition hover:bg-zinc-100 hover:text-zinc-900"
+                className="rounded-full px-3 py-1.5 text-body transition hover:bg-elevated hover:text-ink"
               >
                 Feed
               </Link>
               <Link
                 href="/add"
-                className="rounded-full bg-zinc-900 px-3.5 py-1.5 font-medium text-white transition hover:bg-zinc-700"
+                className="rounded-full bg-strong px-3.5 py-1.5 font-medium text-onstrong transition hover:opacity-90"
               >
                 Guardar
               </Link>
               <Link
                 href="/import"
-                className="rounded-full px-3 py-1.5 text-zinc-600 transition hover:bg-zinc-100 hover:text-zinc-900"
+                className="rounded-full px-3 py-1.5 text-body transition hover:bg-elevated hover:text-ink"
               >
                 Importar
               </Link>
               <Link
                 href="/settings"
-                className="rounded-full px-3 py-1.5 text-zinc-600 transition hover:bg-zinc-100 hover:text-zinc-900"
+                className="rounded-full px-3 py-1.5 text-body transition hover:bg-elevated hover:text-ink"
               >
                 Ajustes
               </Link>
               <form action={signOutAction}>
                 <button
                   type="submit"
-                  className="rounded-full px-3 py-1.5 text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-900"
+                  className="rounded-full px-3 py-1.5 text-mute transition hover:bg-elevated hover:text-ink"
                 >
                   Salir
                 </button>
@@ -89,7 +89,7 @@ export default function RootLayout({
         <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6">
           {children}
         </main>
-        <footer className="border-t border-zinc-200 py-4 text-center text-xs text-zinc-400">
+        <footer className="border-t border-edge py-4 text-center text-xs text-mute">
           Marker · guarda, importa y reencuentra lo que ves
         </footer>
         <ServiceWorkerRegistrar />

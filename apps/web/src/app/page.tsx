@@ -3,17 +3,7 @@ import { PLATFORMS, type Platform } from "@/core/domain/item";
 import { makeListItems } from "@/infrastructure/composition";
 import { createSupabaseServerClient } from "@/infrastructure/supabase/client.server";
 import { ItemCard } from "./components/item-card";
-
-const PLATFORM_LABELS: Record<Platform, string> = {
-  instagram: "Instagram",
-  twitter: "X",
-  youtube: "YouTube",
-  reddit: "Reddit",
-  facebook: "Facebook",
-  pinterest: "Pinterest",
-  tiktok: "TikTok",
-  web: "Web",
-};
+import { PLATFORM_LABELS } from "./components/platform-meta";
 
 interface FeedPageProps {
   searchParams: Promise<{ platform?: string; q?: string }>;
@@ -60,12 +50,12 @@ export default async function FeedPage({ searchParams }: FeedPageProps) {
             defaultValue={query ?? ""}
             placeholder="Busca en lo que guardaste… (título, descripción, texto)"
             aria-label="Buscar en mis guardados"
-            className="w-full rounded-lg border border-zinc-300 bg-white px-3.5 py-2 text-sm placeholder:text-zinc-400 focus:border-indigo-500"
+            className="w-full rounded-lg border border-edge bg-surface px-3.5 py-2 text-sm placeholder:text-mute focus:border-accent"
           />
           {platform && <input type="hidden" name="platform" value={platform} />}
           <button
             type="submit"
-            className="shrink-0 rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-700"
+            className="shrink-0 rounded-lg bg-strong px-4 py-2 text-sm font-medium text-onstrong transition hover:opacity-90"
           >
             Buscar
           </button>
@@ -76,8 +66,8 @@ export default async function FeedPage({ searchParams }: FeedPageProps) {
             href={chipHref({ platform: "" })}
             className={`rounded-full border px-3 py-1 transition ${
               !platform
-                ? "border-zinc-900 bg-zinc-900 text-white"
-                : "border-zinc-300 bg-white text-zinc-600 hover:border-zinc-400"
+                ? "border-strong bg-strong text-onstrong"
+                : "border-edge bg-surface text-body hover:border-mute"
             }`}
           >
             Todo
@@ -88,8 +78,8 @@ export default async function FeedPage({ searchParams }: FeedPageProps) {
               href={chipHref({ platform: p })}
               className={`rounded-full border px-3 py-1 transition ${
                 platform === p
-                  ? "border-zinc-900 bg-zinc-900 text-white"
-                  : "border-zinc-300 bg-white text-zinc-600 hover:border-zinc-400"
+                  ? "border-strong bg-strong text-onstrong"
+                  : "border-edge bg-surface text-body hover:border-mute"
               }`}
             >
               {PLATFORM_LABELS[p]}
@@ -99,17 +89,17 @@ export default async function FeedPage({ searchParams }: FeedPageProps) {
       </section>
 
       {items.length === 0 ? (
-        <section className="rounded-xl border border-dashed border-zinc-300 bg-white p-10 text-center">
-          <h1 className="text-lg font-semibold text-zinc-900">
+        <section className="rounded-xl border border-dashed border-edge bg-surface p-10 text-center">
+          <h1 className="text-lg font-semibold text-ink">
             {query || platform ? "Nada por aquí con ese filtro" : "Tu feed está vacío"}
           </h1>
-          <p className="mx-auto mt-2 max-w-md text-sm text-zinc-500">
+          <p className="mx-auto mt-2 max-w-md text-sm text-mute">
             Guarda tu primer enlace pegando una URL, o espera a la fase 1 para
             capturar directamente desde el menú “Compartir” de tu Android.
           </p>
           <Link
             href="/add"
-            className="mt-4 inline-block rounded-full bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-500"
+            className="mt-4 inline-block rounded-full bg-accent px-4 py-2 text-sm font-medium text-onaccent transition hover:opacity-90"
           >
             Guardar mi primer enlace
           </Link>

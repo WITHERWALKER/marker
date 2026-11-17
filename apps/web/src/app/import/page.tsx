@@ -54,7 +54,7 @@ export default async function ImportPage({ searchParams }: ImportPageProps) {
     <div className="mx-auto flex max-w-2xl flex-col gap-6">
       <header>
         <h1 className="text-xl font-semibold tracking-tight">Importar histórico</h1>
-        <p className="mt-1 text-sm text-zinc-500">
+        <p className="mt-1 text-sm text-mute">
           Trae a Marker lo que ya habías guardado en otras apps. Se preserva la
           fecha original y los duplicados se descartan automáticamente.
         </p>
@@ -63,7 +63,7 @@ export default async function ImportPage({ searchParams }: ImportPageProps) {
       {error && (
         <p
           role="alert"
-          className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+          className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-700 dark:text-red-400"
         >
           {error}
         </p>
@@ -72,10 +72,10 @@ export default async function ImportPage({ searchParams }: ImportPageProps) {
       {hasImportStats && (
         <div
           role="status"
-          className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"
+          className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-700 dark:text-emerald-400"
         >
           <p className="font-medium">Importación terminada ✓</p>
-          <p className="mt-1 text-emerald-700">
+          <p className="mt-1">
             {params.imported} nuevos · {params.duplicates ?? 0} duplicados ·{" "}
             {params.invalid ?? 0} inválidos
           </p>
@@ -85,10 +85,10 @@ export default async function ImportPage({ searchParams }: ImportPageProps) {
       {hasEnrichStats && (
         <div
           role="status"
-          className="rounded-lg border border-sky-200 bg-sky-50 px-4 py-3 text-sm text-sky-800"
+          className="rounded-lg border border-sky-500/30 bg-sky-500/10 px-4 py-3 text-sm text-sky-700 dark:text-sky-400"
         >
           <p className="font-medium">Enriquecimiento procesado ✓</p>
-          <p className="mt-1 text-sky-700">
+          <p className="mt-1">
             {params.processed} procesados · {params.enriched ?? 0} con metadata ·{" "}
             {params.failed ?? 0} fallidos · quedan {params.remaining ?? 0} pendientes
           </p>
@@ -98,12 +98,12 @@ export default async function ImportPage({ searchParams }: ImportPageProps) {
       {pending > 0 && (
         <section
           aria-labelledby="enrich-heading"
-          className="rounded-xl border border-amber-200 bg-amber-50 p-5 text-sm text-amber-900"
+          className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-5 text-sm text-amber-700 dark:text-amber-400"
         >
           <h2 id="enrich-heading" className="font-semibold">
             Pendientes de enriquecer: {pending}
           </h2>
-          <p className="mt-1 text-amber-800">
+          <p className="mt-1">
             Los items importados llegan sin metadata. Procesa en lotes de 15
             para obtener título, autor y miniatura de la fuente. Ojo:
             plataformas como Instagram y X bloquean el acceso anónimo, así que
@@ -113,7 +113,7 @@ export default async function ImportPage({ searchParams }: ImportPageProps) {
           <form action="/api/enrich-pending" method="post" className="mt-3">
             <button
               type="submit"
-              className="rounded-full bg-amber-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-amber-500"
+              className="rounded-full bg-amber-500 px-5 py-2.5 text-sm font-medium text-zinc-950 transition hover:bg-amber-400"
             >
               Enriquecer ahora
             </button>
@@ -128,7 +128,7 @@ export default async function ImportPage({ searchParams }: ImportPageProps) {
         className="flex items-end gap-3"
       >
         <div className="flex w-full flex-col gap-1">
-          <label htmlFor="file" className="text-sm font-medium text-zinc-700">
+          <label htmlFor="file" className="text-sm font-medium text-body">
             Archivos de export
           </label>
           <input
@@ -138,61 +138,61 @@ export default async function ImportPage({ searchParams }: ImportPageProps) {
             accept=".json,.js,.txt"
             multiple
             required
-            className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm file:mr-3 file:rounded-full file:border-0 file:bg-zinc-100 file:px-3 file:py-1 file:text-xs file:font-medium hover:file:bg-zinc-200"
+            className="w-full rounded-lg border border-edge bg-surface px-3 py-2 text-sm file:mr-3 file:rounded-full file:border-0 file:bg-canvas file:px-3 file:py-1 file:text-xs file:font-medium file:text-body hover:file:bg-elevated"
           />
         </div>
         <button
           type="submit"
-          className="shrink-0 rounded-full bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-indigo-500"
+          className="shrink-0 rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-onaccent transition hover:opacity-90"
         >
           Importar
         </button>
       </form>
 
       <section
-        className="rounded-xl border border-zinc-200 bg-white p-5 text-sm text-zinc-600"
+        className="rounded-xl border border-edge bg-surface p-5 text-sm text-body"
         aria-labelledby="how-to-export"
       >
-        <h2 id="how-to-export" className="font-semibold text-zinc-900">
+        <h2 id="how-to-export" className="font-semibold text-ink">
           Cómo conseguir el archivo
         </h2>
         <div className="mt-3 flex flex-col gap-3">
           <div>
-            <p className="font-medium text-zinc-800">Instagram — posts guardados</p>
+            <p className="font-medium text-ink">Instagram — posts guardados</p>
             <p className="mt-0.5">
               App → Configuración → Tu actividad →{" "}
               <em>Descargar tu información</em> → pide solo «Posts guardados» en
               formato JSON. Del ZIP que llega a tu correo, sube{" "}
-              <code className="rounded bg-zinc-100 px-1.5 py-0.5 font-mono text-xs">
+              <code className="rounded bg-elevated px-1.5 py-0.5 font-mono text-xs">
                 saved_posts.json
               </code>
               .
             </p>
           </div>
           <div>
-            <p className="font-medium text-zinc-800">X — me gusta y guardados</p>
+            <p className="font-medium text-ink">X — me gusta y guardados</p>
             <p className="mt-0.5">
               Configuración → Tu cuenta → <em>Descargar un archivo de tus datos</em>.
               Del ZIP, sube{" "}
-              <code className="rounded bg-zinc-100 px-1.5 py-0.5 font-mono text-xs">
+              <code className="rounded bg-elevated px-1.5 py-0.5 font-mono text-xs">
                 data/like.js
               </code>{" "}
               (me gusta) y{" "}
-              <code className="rounded bg-zinc-100 px-1.5 py-0.5 font-mono text-xs">
+              <code className="rounded bg-elevated px-1.5 py-0.5 font-mono text-xs">
                 data/bookmark.js
               </code>{" "}
               (guardados) — puedes seleccionar varios archivos a la vez.
             </p>
           </div>
         </div>
-        <p className="mt-3 border-t border-zinc-100 pt-3 text-xs text-zinc-400">
+        <p className="mt-3 border-t border-edge pt-3 text-xs text-mute">
           Puedes subir varios archivos a la vez, o el mismo dos veces: el dedupe
           por URL canónica evita guardar nada repetido.
         </p>
       </section>
 
       <div className="text-sm">
-        <Link href="/" className="text-zinc-500 hover:text-zinc-900">
+        <Link href="/" className="text-mute hover:text-ink">
           ← Volver al feed
         </Link>
       </div>

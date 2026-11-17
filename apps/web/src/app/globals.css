@@ -2,11 +2,120 @@
 
 /*
  * Marker · estilos globales.
- * La estética vive en las clases de Tailwind por componente; aquí solo
- * decisiones de documento: fuente, selección y foco accesible.
+ *
+ * Tema claro/oscuro con tokens semánticos: los valores crudos viven en pares
+ * (--*-light/--*-dark) y el token activo se elige con @media
+ * prefers-color-scheme; donde el navegador soporta light-dark() se delega en
+ * él para que el tema siga vivo ante cambios de esquema en caliente.
+ * Tailwind consume los tokens via @theme inline, así bg-surface, text-mute
+ * etc. funcionan en ambos esquemas sin duplicar clases.
  */
 
+:root {
+  /* MANDATORIO: el esquema se declara en la raíz (nunca solo en body) para
+   * que scrollbars, form controls y el canvas del documento sigan el tema. */
+  color-scheme: light dark;
+
+  /* ------- Valores crudos por esquema ------- */
+  --canvas-light: var(--color-zinc-50);
+  --canvas-dark: var(--color-zinc-950);
+  --surface-light: var(--color-white);
+  --surface-dark: var(--color-zinc-900);
+  --elevated-light: var(--color-zinc-100);
+  --elevated-dark: var(--color-zinc-800);
+  --edge-light: var(--color-zinc-200);
+  --edge-dark: var(--color-zinc-800);
+  --ink-light: var(--color-zinc-900);
+  --ink-dark: var(--color-zinc-50);
+  --text-light: var(--color-zinc-600);
+  --text-dark: var(--color-zinc-300);
+  --mute-light: var(--color-zinc-500);
+  --mute-dark: var(--color-zinc-400);
+  --strong-light: var(--color-zinc-900);
+  --strong-dark: var(--color-zinc-100);
+  --onstrong-light: var(--color-white);
+  --onstrong-dark: var(--color-zinc-950);
+  --accent-light: var(--color-indigo-600);
+  --accent-dark: var(--color-indigo-500);
+  --onaccent-light: var(--color-white);
+  --onaccent-dark: var(--color-white);
+  --fab-light: var(--color-red-600);
+  --fab-dark: var(--color-red-500);
+  --scroll-thumb-light: var(--color-zinc-400);
+  --scroll-thumb-dark: var(--color-zinc-600);
+
+  /* ------- Token activo: fallback con @media + light-dark() si existe ------- */
+  --c-canvas: var(--canvas-light);
+  --c-surface: var(--surface-light);
+  --c-elevated: var(--elevated-light);
+  --c-edge: var(--edge-light);
+  --c-ink: var(--ink-light);
+  --c-text: var(--text-light);
+  --c-mute: var(--mute-light);
+  --c-strong: var(--strong-light);
+  --c-onstrong: var(--onstrong-light);
+  --c-accent: var(--accent-light);
+  --c-onaccent: var(--onaccent-light);
+  --c-fab: var(--fab-light);
+  --c-scroll-thumb: var(--scroll-thumb-light);
+
+  @media (prefers-color-scheme: dark) {
+    --c-canvas: var(--canvas-dark);
+    --c-surface: var(--surface-dark);
+    --c-elevated: var(--elevated-dark);
+    --c-edge: var(--edge-dark);
+    --c-ink: var(--ink-dark);
+    --c-text: var(--text-dark);
+    --c-mute: var(--mute-dark);
+    --c-strong: var(--strong-dark);
+    --c-onstrong: var(--onstrong-dark);
+    --c-accent: var(--accent-dark);
+    --c-onaccent: var(--onaccent-dark);
+    --c-fab: var(--fab-dark);
+    --c-scroll-thumb: var(--scroll-thumb-dark);
+  }
+
+  @supports (color: light-dark(#000, #fff)) {
+    --c-canvas: light-dark(var(--canvas-light), var(--canvas-dark));
+    --c-surface: light-dark(var(--surface-light), var(--surface-dark));
+    --c-elevated: light-dark(var(--elevated-light), var(--elevated-dark));
+    --c-edge: light-dark(var(--edge-light), var(--edge-dark));
+    --c-ink: light-dark(var(--ink-light), var(--ink-dark));
+    --c-text: light-dark(var(--text-light), var(--text-dark));
+    --c-mute: light-dark(var(--mute-light), var(--mute-dark));
+    --c-strong: light-dark(var(--strong-light), var(--strong-dark));
+    --c-onstrong: light-dark(var(--onstrong-light), var(--onstrong-dark));
+    --c-accent: light-dark(var(--accent-light), var(--accent-dark));
+    --c-onaccent: light-dark(var(--onaccent-light), var(--onaccent-dark));
+    --c-fab: light-dark(var(--fab-light), var(--fab-dark));
+    --c-scroll-thumb: light-dark(var(--scroll-thumb-light), var(--scroll-thumb-dark));
+  }
+
+  /* Browser UI a tono con el tema (guía dark-mode). No se anima ni
+   * transiciona scrollbar-color: en WebKit provoca flicker. */
+  scrollbar-color: var(--c-scroll-thumb) transparent;
+  accent-color: var(--c-accent);
+}
+
+/* Utilidades semánticas para todos los componentes. */
+@theme inline {
+  --color-canvas: var(--c-canvas);
+  --color-surface: var(--c-surface);
+  --color-elevated: var(--c-elevated);
+  --color-edge: var(--c-edge);
+  --color-ink: var(--c-ink);
+  --color-body: var(--c-text);
+  --color-mute: var(--c-mute);
+  --color-strong: var(--c-strong);
+  --color-onstrong: var(--c-onstrong);
+  --color-accent: var(--c-accent);
+  --color-onaccent: var(--c-onaccent);
+  --color-fab: var(--c-fab);
+}
+
 html {
+  /* Fuente de sistema provisional: en el siguiente commit la aporta
+   * next/font via variable CSS. */
   font-family:
     ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
     Arial, sans-serif;
@@ -14,10 +123,10 @@ html {
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-indigo-600);
+  outline: 2px solid var(--color-accent);
   outline-offset: 2px;
 }
 
 ::selection {
-  background: color-mix(in oklch, var(--color-indigo-600) 25%, transparent);
+  background: color-mix(in oklch, var(--color-accent) 25%, transparent);
 }

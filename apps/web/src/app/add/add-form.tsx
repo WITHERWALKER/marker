@@ -8,9 +8,10 @@ const initialState: SaveItemState = { status: "idle", message: null };
 
 const STATUS_STYLES: Record<SaveItemState["status"], string> = {
   idle: "",
-  ok: "text-emerald-700 bg-emerald-50 border-emerald-200",
-  duplicate: "text-amber-700 bg-amber-50 border-amber-200",
-  error: "text-red-700 bg-red-50 border-red-200",
+  ok: "border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400",
+  duplicate:
+    "border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-400",
+  error: "border-red-500/30 bg-red-500/10 text-red-700 dark:text-red-400",
 };
 
 interface AddFormProps {
@@ -23,7 +24,7 @@ export function AddForm({ initialUrl }: AddFormProps) {
   return (
     <>
       <form action={formAction} className="flex flex-col gap-3">
-        <label htmlFor="url" className="text-sm font-medium text-zinc-700">
+        <label htmlFor="url" className="text-sm font-medium text-body">
           Enlace
         </label>
         <input
@@ -35,29 +36,29 @@ export function AddForm({ initialUrl }: AddFormProps) {
           required
           defaultValue={initialUrl}
           placeholder="https://www.instagram.com/reel/…"
-          className="w-full rounded-lg border border-zinc-300 bg-white px-3.5 py-2.5 text-sm placeholder:text-zinc-400 focus:border-indigo-500"
+          className="w-full rounded-lg border border-edge bg-surface px-3.5 py-2.5 text-sm placeholder:text-mute focus:border-accent"
         />
 
-        <label htmlFor="text" className="text-sm font-medium text-zinc-700">
-          Nota <span className="font-normal text-zinc-400">(opcional)</span>
+        <label htmlFor="text" className="text-sm font-medium text-body">
+          Nota <span className="font-normal text-mute">(opcional)</span>
         </label>
         <textarea
           id="text"
           name="text"
           rows={3}
           placeholder="¿Por qué lo guardas? Palabras que te ayudarán a encontrarlo"
-          className="w-full rounded-lg border border-zinc-300 bg-white px-3.5 py-2.5 text-sm placeholder:text-zinc-400 focus:border-indigo-500"
+          className="w-full rounded-lg border border-edge bg-surface px-3.5 py-2.5 text-sm placeholder:text-mute focus:border-accent"
         />
 
         <div className="flex items-center gap-3">
           <button
             type="submit"
             disabled={pending}
-            className="rounded-full bg-indigo-600 px-5 py-2 text-sm font-medium text-white transition hover:bg-indigo-500 disabled:opacity-50"
+            className="rounded-full bg-accent px-5 py-2 text-sm font-medium text-onaccent transition hover:opacity-90 disabled:opacity-50"
           >
             {pending ? "Guardando…" : "Guardar"}
           </button>
-          <Link href="/" className="text-sm text-zinc-500 hover:text-zinc-900">
+          <Link href="/" className="text-sm text-mute hover:text-ink">
             Volver al feed
           </Link>
         </div>

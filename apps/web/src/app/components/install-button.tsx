@@ -97,13 +97,13 @@ export function InstallButton() {
           onClick={handleClick}
           disabled={busy}
           aria-disabled={busy}
-          className="rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1.5 text-sm font-medium text-indigo-700 transition hover:bg-indigo-100 disabled:opacity-50"
+          className="rounded-full border border-accent/30 bg-accent/10 px-3 py-1.5 text-sm font-medium text-accent transition hover:bg-accent/20 disabled:opacity-50"
         >
           {busy ? "Instalando…" : "Instalar app"}
         </button>
       )}
       {status && (
-        <p role="status" className="text-xs text-zinc-500">
+        <p role="status" className="text-xs text-mute">
           {status}
         </p>
       )}
