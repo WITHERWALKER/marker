@@ -1,0 +1,19 @@
+name = "marker"
+main = ".open-next/worker.js"
+upload_source_maps = true
+compatibility_date = "2026-11-18"
+compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
+
+[assets]
+directory = ".open-next/assets"
+binding = "ASSETS"
+
+[[services]]
+binding = "WORKER_SELF_REFERENCE"
+service = "marker"
+
+[images]
+binding = "IMAGES"
+
+[observability]
+enabled = true

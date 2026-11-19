@@ -9,11 +9,8 @@
   "scripts": {
     "dev": "pnpm --filter @marker/web dev",
     "build": "pnpm --filter @marker/web build",
-    "build:pages": "pnpm install && pnpm --filter @marker/web build",
+    "preview:cloudflare": "pnpm --filter @marker/web preview",
+    "deploy:cloudflare": "pnpm --filter @marker/web deploy",
     "typecheck": "pnpm -r typecheck"
-  },
-  "devDependencies": {
-    "@cloudflare/next-on-pages": "^1.13.16",
-    "wrangler": "^4.162.0"
   }
 }

@@ -16,7 +16,10 @@ export class MissingSupabaseEnvError extends Error {
 }
 
 const RAW_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const RAW_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+/** Supabase documenta la clave publicable; la anon local sigue siendo válida. */
+const RAW_PUBLIC_KEY =
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 export function supabaseUrl(): string {
   if (!RAW_URL || RAW_URL.startsWith("reemplaza")) {
@@ -26,10 +29,12 @@ export function supabaseUrl(): string {
 }
 
 export function supabaseAnonKey(): string {
-  if (!RAW_ANON_KEY || RAW_ANON_KEY.startsWith("reemplaza")) {
-    throw new MissingSupabaseEnvError("NEXT_PUBLIC_SUPABASE_ANON_KEY");
+  if (!RAW_PUBLIC_KEY || RAW_PUBLIC_KEY.startsWith("reemplaza")) {
+    throw new MissingSupabaseEnvError(
+      "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY (o NEXT_PUBLIC_SUPABASE_ANON_KEY)",
+    );
   }
-  return RAW_ANON_KEY;
+  return RAW_PUBLIC_KEY;
 }
 
 const RAW_JWT_SECRET = process.env.SUPABASE_JWT_SECRET;
