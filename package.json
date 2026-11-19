@@ -6,6 +6,11 @@
   "engines": {
     "node": ">=20"
   },
+  "overrides": {
+    "glob@13.0.7": "^14.0.2",
+    "glob": "^14.0.2",
+    "minimatch": "^11.0.1"
+  },
   "scripts": {
     "dev": "pnpm --filter @marker/web dev",
     "build": "pnpm --filter @marker/web build",
