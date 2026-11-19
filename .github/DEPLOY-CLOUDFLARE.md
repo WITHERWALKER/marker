@@ -2,7 +2,7 @@
 
 Workflow: [`.github/workflows/deploy-cloudflare.yml`](workflows/deploy-cloudflare.yml)
 
-En **GitHub Actions** solo va el secret `CLOUDFLARE_API_TOKEN` (permiso Workers Scripts / Edit). Nada de claves de Supabase ni JWT en el repositorio ni en el YAML.
+En **GitHub Actions** solo va el secret `CLOUDFLARE_API_TOKEN` (permiso Workers Scripts / Edit). Sin este secret el workflow falla de inmediato. Nada de claves de Supabase ni JWT en el repositorio ni en el YAML.
 
 ## Variables de la app (Cloudflare, no GitHub)
 
