@@ -42,17 +42,19 @@ export default function LoginPage() {
           Te enviamos un enlace mágico a <strong>{email}</strong>. Ábrelo desde
           este mismo navegador para entrar.
         </p>
-        <p className="mt-4 rounded-lg bg-canvas p-3 text-xs text-mute">
-          Modo local: el correo aparece en la bandeja de Inbucket →{" "}
-          <a
-            href="http://localhost:54334"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="link-cobalto text-xs"
-          >
-            localhost:54334
-          </a>
-        </p>
+        {process.env.NODE_ENV === "development" && (
+          <p className="mt-4 rounded-lg bg-canvas p-3 text-xs text-mute">
+            Modo local: el correo aparece en la bandeja de Inbucket →{" "}
+            <a
+              href="http://localhost:54334"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="link-cobalto text-xs"
+            >
+              localhost:54334
+            </a>
+          </p>
+        )}
       </div>
     );
   }
