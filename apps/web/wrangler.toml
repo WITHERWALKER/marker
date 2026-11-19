@@ -17,3 +17,9 @@ binding = "IMAGES"
 
 [observability]
 enabled = true
+
+# ...
+[vars]
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY = "sb_publishable_MyYnLwHAGWrsq4nr4Qz0bg_z4iEHSij"
+NEXT_PUBLIC_SUPABASE_URL = "https://pagvlnjqwandlvnsagps.supabase.co"
+# ...

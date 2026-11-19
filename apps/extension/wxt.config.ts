@@ -15,6 +15,9 @@ export default defineConfig({
     description:
       "Guarda en Marker el contenido que estás viendo: menú contextual y popup.",
     permissions: ["contextMenus", "storage", "tabs"],
-    host_permissions: ["http://localhost:3000/*"],
+    host_permissions: [
+      "http://localhost:3000/*",
+      "https://marker.witherwalker-dev.workers.dev/*",
+    ],
   },
 });
